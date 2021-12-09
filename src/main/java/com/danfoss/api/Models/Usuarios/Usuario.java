@@ -12,6 +12,10 @@ public class Usuario {
     private byte Status;
     private byte Activo;
 
+    public static Usuario cargarPorNombre(String username) {
+        return new Usuario();
+    }
+
     public int getId() {
         return Id;
     }
