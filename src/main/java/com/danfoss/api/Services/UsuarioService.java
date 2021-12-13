@@ -17,11 +17,14 @@ public class UsuarioService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = Usuario.cargarPorNombre(username);
+        Usuario usuario = new Usuario();
+        try {
+            usuario = Usuario.cargarPorNombre(username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         List<GrantedAuthority> authorityList = new ArrayList<>();
         authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
-
         return new User(usuario.getUsuario(), usuario.getPasword(), usuario.getStatus() == 1, true, true, true, authorityList);
-
     }
 }
