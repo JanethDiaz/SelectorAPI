@@ -21,8 +21,8 @@ public class UsuarioController {
             return new ResponseEntity<>(new Gson().toJson("Error al tratar de insertar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @RequestMapping(value = "/modificar",  method = RequestMethod.PUT)
-    public ResponseEntity<?>  Modificar(@RequestBody Usuario usuario){
+    @RequestMapping(value = "/actualizar",  method = RequestMethod.PUT)
+    public ResponseEntity<?>  Actualizar(@RequestBody Usuario usuario){
         try
         {
             return new ResponseEntity<>(new Gson().toJson(usuario.Actualizar()), HttpStatus.OK);

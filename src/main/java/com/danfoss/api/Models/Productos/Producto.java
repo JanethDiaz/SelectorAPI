@@ -2,10 +2,10 @@ package com.danfoss.api.Models.Productos;
 
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
-import com.danfoss.api.Models.Usuarios.Usuario;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Producto {
     private int Id;
@@ -72,67 +72,97 @@ public class Producto {
         Activo = activo;
     }
 
-//    public static Producto cargarPorId(int idProducto) throws Exception {
-//        try {
-//            HashMap<String, Object> params = new HashMap<>();
-//            params.put("1", getId());
-//
-//            DataTable dt = new Persistencia().Query("CALL SP_Productos_CargarPorId", params);
-//            if (dt.Rows.size() > 0) {
-//                return loadUsuario(dt);
-//            } else {
-//                throw new Exception("Producto no encontrado favor de validar sus credenciales");
-//            }
-//        } catch (Exception e) {
-//            throw new Exception("Error, producto no encontrado" + e.getMessage());
-//        }
-//    }
-//    public static boolean Insertar() throws Exception {
-//
-//        try {
-//            HashMap<String, Object> params = new HashMap<>();
-//            params.put("1", getCodigo());
-//            params.put("2", getDescripcion());
-//            params.put("3", getIdUsuarioRegistro());
-//            params.put("4", getIdModelo());
-//
-//            DataTable dt = new Persistencia().Query("CALL SP_Productos_Insertar", params);
-//            if (dt.Rows.size() > 0) {
-//                return loadUsuario(dt);
-//            } else {
-//                throw new Exception("Producto insertado");
-//            }
-//        } catch (Exception e) {
-//            throw new Exception("Error, producto ya existente" + e.getMessage());
-//        }
-//    }
-//    public static boolean Eliminar() throws Exception {
-//        try {
-//            HashMap<String, Object> params = new HashMap<>();
-//            params.put("1", getId());
-//
-//            DataTable dt = new Persistencia().Query("CALL SP_Productos_Eliminar", params);
-//            if (dt.Rows.size() > 0) {
-//                return loadUsuario(dt);
-//            } else {
-//                throw new Exception("Producto Eliminado");
-//            }
-//        } catch (Exception e) {
-//            throw new Exception("Error, producto ya Eliminado" + e.getMessage());
-//        }
-//    }
-//    public static ArrayList<Producto> Listar() throws Exception {
-//        try {
-//            HashMap<String, Object> params = new HashMap<>();
-//
-//            DataTable dt = new Persistencia().Query("CALL SP_Productos_Listar", params);
-//            if (dt.Rows.size() > 0) {
-//                return loadUsuario(dt);
-//            } else {
-//                throw new Exception("Productos Listados");
-//            }
-//        } catch (Exception e) {
-//            throw new Exception("Error" + e.getMessage());
-//        }
-//    }
+    public  Producto cargarPorId(int idProducto) throws Exception {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", idProducto);
+
+            DataTable dt = new Persistencia().Query("CALL SP_Productos_CargarPorId", params);
+
+            if (dt.Rows.size() > 0) {
+//                Producto p = new Producto();
+//                Map<String, String> row = dt.Rows.get(0);
+//                p.setId(Integer.parseInt(row.get("Id")));
+//                p.setCodigo(row.get("Codigo"));
+//                p.setDescripcion(row.get("Descripcion"));
+//                p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
+//                p.setIdModelo(Integer.parseInt(row.get("IdModelo")));
+//                p.setStatus(Byte.parseByte(row.get("Status")));
+//                p.setActivo(Byte.parseByte(row.get("Activo")));
+
+                return loadProducto(dt.Rows.get(0));
+            } else {
+                throw new Exception("Producto no encontrado favor de validar sus credenciales");
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al buscar producto" + e.getMessage());
+        }
+    }
+    public  boolean Actualizar() throws Exception {
+        try {
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+            params.put("2", getCodigo());
+            params.put("3", getIdModelo());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_Actualizar", params);
+            return true;
+
+        } catch (Exception e) {
+            throw new Exception("Error no se logro la modificacion" + e.getMessage());
+        }
+    }
+    public  boolean Insertar() throws Exception {
+
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getCodigo());
+            params.put("2", getDescripcion());
+            params.put("3", getIdUsuarioRegistro());
+            params.put("4", getIdModelo());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Productos_Insertar", params);
+            return  true;
+        } catch (Exception e) {
+            throw new Exception("Error, producto ya existente" + e.getMessage());
+        }
+    }
+    public  boolean Eliminar() throws Exception {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Productos_Eliminar", params);
+            return true;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro la eliminacion" + e.getMessage());
+        }
+    }
+    public  ArrayList<Producto> Listar() throws Exception {
+        try {
+            ArrayList<Producto> result = new ArrayList<>();
+            DataTable dt = new Persistencia().Query("CALL SP_Productos_Listar");
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadProducto(row));
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro listar correctamente" + e.getMessage());
+        }
+    }
+    private  Producto loadProducto(Map<String, String> row) {
+        Producto p = new Producto();
+        p.setId(Integer.parseInt(row.get("Id")));
+        p.setCodigo(row.get("Codigo"));
+        p.setDescripcion(row.get("Descripcion"));
+        p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
+        p.setIdModelo(Integer.parseInt(row.get("IdModelo")));
+        p.setStatus(Byte.parseByte(row.get("Status")));
+        p.setActivo(Byte.parseByte(row.get("Activo")));
+
+        return p;
+    }
 }
