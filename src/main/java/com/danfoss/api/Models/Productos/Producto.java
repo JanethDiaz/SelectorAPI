@@ -2,9 +2,13 @@ package com.danfoss.api.Models.Productos;
 
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
+import com.danfoss.api.ExcelHelper.ExcelHelper;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Producto {
@@ -80,16 +84,6 @@ public class Producto {
             DataTable dt = new Persistencia().Query("CALL SP_Productos_CargarPorId", params);
 
             if (dt.Rows.size() > 0) {
-//                Producto p = new Producto();
-//                Map<String, String> row = dt.Rows.get(0);
-//                p.setId(Integer.parseInt(row.get("Id")));
-//                p.setCodigo(row.get("Codigo"));
-//                p.setDescripcion(row.get("Descripcion"));
-//                p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
-//                p.setIdModelo(Integer.parseInt(row.get("IdModelo")));
-//                p.setStatus(Byte.parseByte(row.get("Status")));
-//                p.setActivo(Byte.parseByte(row.get("Activo")));
-
                 return loadProducto(dt.Rows.get(0));
             } else {
                 throw new Exception("Producto no encontrado favor de validar sus credenciales");
@@ -128,6 +122,39 @@ public class Producto {
             throw new Exception("Error, producto ya existente" + e.getMessage());
         }
     }
+    public  void ActualizarListaPrecios(MultipartFile file) {
+
+        try {
+            List<Producto> productos = ExcelHelper.excelToProducts(file.getInputStream());
+            for (Producto p : productos) {
+                Producto producto = cargarPorCodigo(p.getCodigo());
+                if (producto.getId() > 0){
+                    //Implementar algoritmo de actualizacion de costos de productos
+                }
+            }
+
+        }catch(Exception e){
+            throw new RuntimeException("fail to store excel data: " + e.getMessage());
+        }
+    }
+    public  Producto cargarPorCodigo(String codigo) throws Exception {
+
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", codigo);
+
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_CargarPorCodigo", params);
+
+            if (dt.Rows.size() > 0) {
+                return loadProducto(dt.Rows.get(0));
+            } else {
+                throw new Exception("Producto no encontrado favor de validar sus credenciales");
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al buscar producto" + e.getMessage());
+        }
+    }
+
     public  boolean Eliminar() throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -158,10 +185,13 @@ public class Producto {
         p.setId(Integer.parseInt(row.get("Id")));
         p.setCodigo(row.get("Codigo"));
         p.setDescripcion(row.get("Descripcion"));
-        p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
+        if(row.get("IdUsuarioRegistra") != null)
+            p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
         p.setIdModelo(Integer.parseInt(row.get("IdModelo")));
-        p.setStatus(Byte.parseByte(row.get("Status")));
-        p.setActivo(Byte.parseByte(row.get("Activo")));
+        if (row.get("Status") != null)
+            p.setStatus(Byte.parseByte(row.get("Status")));
+        if (row.get("Activo") != null)
+            p.setActivo(Byte.parseByte(row.get("Activo")));
 
         return p;
     }
