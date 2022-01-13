@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Producto {
-    private int Id;
+    private int id;
     private String Codigo;
     private String Descripcion;
     private int IdUsuarioRegistro;
@@ -22,7 +22,7 @@ public class Producto {
     private double Precio;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public String getDescripcion() {
@@ -34,7 +34,7 @@ public class Producto {
     }
 
     public void setId(int id) {
-        Id = id;
+        id = id;
     }
 
     public String getCodigo() {
