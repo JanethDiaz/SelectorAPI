@@ -5,10 +5,11 @@ import com.danfoss.api.DataAccess.Persistencia;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Producto {
-    private int Id;
+    private int id;
     private String Codigo;
     private String Descripcion;
     private int IdUsuarioRegistro;
@@ -17,7 +18,7 @@ public class Producto {
     private byte Activo;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public String getDescripcion() {
@@ -28,8 +29,8 @@ public class Producto {
         Descripcion = descripcion;
     }
 
-    public void setId(int id) {
-        Id = id;
+    public void setId(int Id) {
+        id = Id;
     }
 
     public String getCodigo() {
@@ -89,7 +90,6 @@ public class Producto {
 //                p.setIdModelo(Integer.parseInt(row.get("IdModelo")));
 //                p.setStatus(Byte.parseByte(row.get("Status")));
 //                p.setActivo(Byte.parseByte(row.get("Activo")));
-
                 return loadProducto(dt.Rows.get(0));
             } else {
                 throw new Exception("Producto no encontrado favor de validar sus credenciales");
@@ -122,7 +122,7 @@ public class Producto {
             params.put("3", getIdUsuarioRegistro());
             params.put("4", getIdModelo());
 
-            DataTable dt = new Persistencia().Query("CALL SP_Productos_Insertar", params);
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_Insertar", params);
             return  true;
         } catch (Exception e) {
             throw new Exception("Error, producto ya existente" + e.getMessage());
@@ -133,16 +133,16 @@ public class Producto {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getId());
 
-            DataTable dt = new Persistencia().Query("CALL SP_Productos_Eliminar", params);
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_Eliminar", params);
             return true;
         } catch (Exception e) {
             throw new Exception("Error no se logro la eliminacion" + e.getMessage());
         }
     }
-    public  ArrayList<Producto> Listar() throws Exception {
+    public List<Producto> Listar() throws Exception {
         try {
-            ArrayList<Producto> result = new ArrayList<>();
-            DataTable dt = new Persistencia().Query("CALL SP_Productos_Listar");
+            List<Producto> result = new ArrayList<>();
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_Listar");
             if (dt.Rows.size() > 0) {
                 for ( Map<String, String> row: dt.Rows ) {
                     result.add(loadProducto(row));
@@ -158,10 +158,12 @@ public class Producto {
         p.setId(Integer.parseInt(row.get("Id")));
         p.setCodigo(row.get("Codigo"));
         p.setDescripcion(row.get("Descripcion"));
-        p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
-        p.setIdModelo(Integer.parseInt(row.get("IdModelo")));
+//        p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
+        if(row.get("IdModelo") != null) {
+            p.setIdModelo(Integer.parseInt(row.get("IdModelo")));
+        }
         p.setStatus(Byte.parseByte(row.get("Status")));
-        p.setActivo(Byte.parseByte(row.get("Activo")));
+//        p.setActivo(Byte.parseByte(row.get("Activo")));
 
         return p;
     }

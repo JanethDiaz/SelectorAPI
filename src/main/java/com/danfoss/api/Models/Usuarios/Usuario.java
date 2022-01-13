@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Usuario {
-    private int Id;
+    private int id;
     private String Usuario;
     private String Pasword;
     //private DateTimeFormat FechaRegistro;
@@ -17,11 +17,11 @@ public class Usuario {
     private byte Activo;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
-    public void setId(int id) {
-        Id = id;
+    public void setId(int Id) {
+        id = Id;
     }
 
     public String getUsuario() {

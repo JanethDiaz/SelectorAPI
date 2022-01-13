@@ -54,7 +54,7 @@ public class AuthorizationServerConf  extends AuthorizationServerConfigurerAdapt
         return jwtAccessTokenConverter;
     }
 
-    static final String RSA_PRIVATE = "-----BEGIN RSA PRIVATE KEY-----\n" +
+    private static final String RSA_PRIVATE = "-----BEGIN RSA PRIVATE KEY-----\n" +
             "MIIEpAIBAAKCAQEA166nN8MIhU4/BiEe5oGyl/9yIHMuj/PUrXq6sHHszWA4OC7E\n" +
             "lneCa/sZS4WWywYZFGzKO7zVOt8WF5qOxk69XClsEfoQxW4ygBDRxxkJUyoAp5Rd\n" +
             "jlYGzhsDlcl1fpH5ANQfZEfcCh39lG3cjOxIbl+wVF4IDEF8+gYHbqb69PPLoAkE\n" +
@@ -82,7 +82,7 @@ public class AuthorizationServerConf  extends AuthorizationServerConfigurerAdapt
             "3ZLjSuOCAS7qGs19MCtFxJWLKaB+T0sb87jPoyFq6PSvOc3Uq2qchg==\n" +
             "-----END RSA PRIVATE KEY-----";
 
-    static final String RSA_PUBLIC = "-----BEGIN PUBLIC KEY-----\n" +
+    private static final String RSA_PUBLIC = "-----BEGIN PUBLIC KEY-----\n" +
             "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA166nN8MIhU4/BiEe5oGy\n" +
             "l/9yIHMuj/PUrXq6sHHszWA4OC7ElneCa/sZS4WWywYZFGzKO7zVOt8WF5qOxk69\n" +
             "XClsEfoQxW4ygBDRxxkJUyoAp5RdjlYGzhsDlcl1fpH5ANQfZEfcCh39lG3cjOxI\n" +
