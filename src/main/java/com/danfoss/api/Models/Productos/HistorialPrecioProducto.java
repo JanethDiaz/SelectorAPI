@@ -70,8 +70,7 @@ public class HistorialPrecioProducto {
             if (dt.Rows.size() > 0) {
                 return loadHistorial(dt.Rows.get(0));
             } else {
-                throw new Exception("Produ" +
-                        "0cto no encontrado favor de validar sus credenciales");
+                throw new Exception("Producto no encontrado favor de validar sus credenciales");
             }
         } catch (Exception e) {
             throw new Exception("Error al buscar producto" + e.getMessage());
