@@ -16,9 +16,10 @@ public class Producto {
     private String Codigo;
     private String Descripcion;
     private int IdUsuarioRegistro;
-    private int IdModelo;
+    private Modelo modelo;
     private byte Status;
     private byte Activo;
+    private double Precio;
 
     public int getId() {
         return Id;
@@ -52,12 +53,12 @@ public class Producto {
         IdUsuarioRegistro = idUsuarioRegistro;
     }
 
-    public int getIdModelo() {
-        return IdModelo;
+    public Modelo getModelo() {
+        return modelo;
     }
 
-    public void setIdModelo(int idModelo) {
-        IdModelo = idModelo;
+    public void setModelo(Modelo modelo) {
+        this.modelo = modelo;
     }
 
     public byte getStatus() {
@@ -74,6 +75,14 @@ public class Producto {
 
     public void setActivo(byte activo) {
         Activo = activo;
+    }
+
+    public double getPrecio() {
+        return Precio;
+    }
+
+    public void setPrecio(double precio) {
+        Precio = precio;
     }
 
     public  Producto cargarPorId(int idProducto) throws Exception {
@@ -98,9 +107,22 @@ public class Producto {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getId());
             params.put("2", getCodigo());
-            params.put("3", getIdModelo());
+            params.put("3", getModelo().getId());
 
             DataTable dt = new Persistencia().Query("CALL SP_Producto_Actualizar", params);
+            return true;
+
+        } catch (Exception e) {
+            throw new Exception("Error no se logro la modificacion" + e.getMessage());
+        }
+    }
+    public boolean ActualizarDescripcion() throws Exception {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+            params.put("2", getDescripcion());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_ActualizarDescripcion", params);
             return true;
 
         } catch (Exception e) {
@@ -114,7 +136,7 @@ public class Producto {
             params.put("1", getCodigo());
             params.put("2", getDescripcion());
             params.put("3", getIdUsuarioRegistro());
-            params.put("4", getIdModelo());
+            params.put("4", getModelo().getId());
 
             DataTable dt = new Persistencia().Query("CALL SP_Productos_Insertar", params);
             return  true;
@@ -127,9 +149,32 @@ public class Producto {
         try {
             List<Producto> productos = ExcelHelper.excelToProducts(file.getInputStream());
             for (Producto p : productos) {
+                Modelo m = new Modelo();
+                m = m.cargarPorDescripcion(p.getModelo().getDescripcion());
+                if (m.getId() > 0) {
+                    p.setModelo(m);
+                } else {
+                    p.setModelo(p.getModelo().Insertar());
+                }
                 Producto producto = cargarPorCodigo(p.getCodigo());
                 if (producto.getId() > 0){
-                    //Implementar algoritmo de actualizacion de costos de productos
+                    producto.setDescripcion(p.getDescripcion());
+                    producto.ActualizarDescripcion();
+
+                    HistorialPrecioProducto hpp = new HistorialPrecioProducto(producto.getId());
+                    hpp.setIdProducto(producto.getId());
+                    hpp.DesactivarPorIdProducto();
+                    hpp.setPrecio(p.getPrecio());
+                    hpp.setIdUsuarioRegistro(1);
+                    hpp.Insertar();
+                } else {
+                    p.Insertar();
+
+                    HistorialPrecioProducto hpp = new HistorialPrecioProducto(producto.getId());
+                    hpp.setIdProducto(producto.getId());
+                    hpp.setPrecio(p.getPrecio());
+                    hpp.setIdUsuarioRegistro(1);
+                    hpp.Insertar();
                 }
             }
 
@@ -181,13 +226,14 @@ public class Producto {
         }
     }
     private  Producto loadProducto(Map<String, String> row) {
+
         Producto p = new Producto();
         p.setId(Integer.parseInt(row.get("Id")));
         p.setCodigo(row.get("Codigo"));
         p.setDescripcion(row.get("Descripcion"));
         if(row.get("IdUsuarioRegistra") != null)
             p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
-        p.setIdModelo(Integer.parseInt(row.get("IdModelo")));
+        p.setModelo(new Modelo(Integer.parseInt(row.get("IdModelo"))));
         if (row.get("Status") != null)
             p.setStatus(Byte.parseByte(row.get("Status")));
         if (row.get("Activo") != null)

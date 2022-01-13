@@ -1,5 +1,6 @@
 package com.danfoss.api.ExcelHelper;
 
+import com.danfoss.api.Models.Productos.Modelo;
 import com.danfoss.api.Models.Productos.Producto;
 //import com.mysql.cj.api.result.Row;
 //import com.sun.deploy.security.ValidationState.TYPE;
@@ -62,12 +63,16 @@ public class ExcelHelper {
                             break;
 
                         case 1:
+                            producto.setModelo(new Modelo(currentCell.getStringCellValue()));
+                            break;
+
+                        case 2:
                             producto.setDescripcion(currentCell.getStringCellValue());
                             break;
 
-//                        case 2:
-//                            producto.(currentCell.getStringCellValue());
-//                            break;
+                        case 3:
+                            producto.setPrecio(Double.parseDouble(currentCell.getStringCellValue()));
+                            break;
                         default:
                             break;
                     }
