@@ -51,12 +51,12 @@ public class ExcelHelper {
                 }
                 Iterator<Cell> cellsInRow = currentRow.iterator();
 
-                Producto producto = new Producto();
+
 
                 int cellIdx = 0;
                 while (cellsInRow.hasNext()) {
+                    Producto producto = new Producto();
                     Cell currentCell = cellsInRow.next();
-
                     switch (cellIdx) {
                         case 0:
                             producto.setCodigo(currentCell.getStringCellValue());
@@ -77,8 +77,8 @@ public class ExcelHelper {
                             break;
                     }
                     cellIdx++;
+                    productoList.add(producto);
                 }
-                productoList.add(producto);
             }
             workbook.close();
             return productoList;
@@ -86,7 +86,6 @@ public class ExcelHelper {
         catch (IOException e)
         {
             throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
-
         }
     }
 }
