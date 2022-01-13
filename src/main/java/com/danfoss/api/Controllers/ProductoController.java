@@ -34,7 +34,7 @@ public class ProductoController {
         }
     }
     @RequestMapping(value = "/actualizar",  method = RequestMethod.PUT)
-    public ResponseEntity<?>  Actualizar(@RequestBody Producto producto){
+    public ResponseEntity<?>  Actualizar(@RequestBody Producto producto) {
         try
         {
             return new ResponseEntity<>(new Gson().toJson(producto.Actualizar()), HttpStatus.OK);
@@ -54,7 +54,7 @@ public class ProductoController {
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar productos" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

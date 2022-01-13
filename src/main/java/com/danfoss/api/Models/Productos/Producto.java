@@ -178,7 +178,8 @@ public class Producto {
                 }
             }
 
-        }catch(Exception e){
+        }
+        catch(Exception e) {
             throw new RuntimeException("fail to store excel data: " + e.getMessage());
         }
     }
@@ -214,7 +215,7 @@ public class Producto {
     public  ArrayList<Producto> Listar() throws Exception {
         try {
             ArrayList<Producto> result = new ArrayList<>();
-            DataTable dt = new Persistencia().Query("CALL SP_Productos_Listar");
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_Listar");
             if (dt.Rows.size() > 0) {
                 for ( Map<String, String> row: dt.Rows ) {
                     result.add(loadProducto(row));
