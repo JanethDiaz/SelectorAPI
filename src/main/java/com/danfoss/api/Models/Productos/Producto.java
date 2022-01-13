@@ -90,7 +90,7 @@ public class Producto {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", idProducto);
 
-            DataTable dt = new Persistencia().Query("CALL SP_Productos_CargarPorId", params);
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_CargarPorId", params);
 
             if (dt.Rows.size() > 0) {
                 return loadProducto(dt.Rows.get(0));
@@ -138,7 +138,7 @@ public class Producto {
             params.put("3", getIdUsuarioRegistro());
             params.put("4", getModelo().getId());
 
-            DataTable dt = new Persistencia().Query("CALL SP_Productos_Insertar", params);
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_Insertar", params);
             return  true;
         } catch (Exception e) {
             throw new Exception("Error, producto ya existente" + e.getMessage());
@@ -205,7 +205,7 @@ public class Producto {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getId());
 
-            DataTable dt = new Persistencia().Query("CALL SP_Productos_Eliminar", params);
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_Eliminar", params);
             return true;
         } catch (Exception e) {
             throw new Exception("Error no se logro la eliminacion" + e.getMessage());
@@ -214,7 +214,7 @@ public class Producto {
     public  ArrayList<Producto> Listar() throws Exception {
         try {
             ArrayList<Producto> result = new ArrayList<>();
-            DataTable dt = new Persistencia().Query("CALL SP_Productos_Listar");
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_Listar");
             if (dt.Rows.size() > 0) {
                 for ( Map<String, String> row: dt.Rows ) {
                     result.add(loadProducto(row));
