@@ -4,6 +4,7 @@ import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
 import com.danfoss.api.ExcelHelper.ExcelHelper;
 import org.springframework.web.multipart.MultipartFile;
+import sun.invoke.empty.Empty;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,72 +21,67 @@ public class Producto {
     private byte Status;
     private byte Activo;
     private double Precio;
+    private String DescModelo;
 
     public int getId() {
         return id;
     }
-
-    public String getDescripcion() {
-        return Descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
-    }
-
     public void setId(int id) {
-        id = id;
+        this.id = id;
     }
-
     public String getCodigo() {
         return Codigo;
     }
-
     public void setCodigo(String codigo) {
         Codigo = codigo;
     }
-
+    public String getDescripcion() {
+        return Descripcion;
+    }
+    public void setDescripcion(String descripcion) {
+        Descripcion = descripcion;
+    }
     public int getIdUsuarioRegistro() {
         return IdUsuarioRegistro;
     }
-
     public void setIdUsuarioRegistro(int idUsuarioRegistro) {
         IdUsuarioRegistro = idUsuarioRegistro;
     }
-
     public Modelo getModelo() {
         return modelo;
     }
-
     public void setModelo(Modelo modelo) {
         this.modelo = modelo;
     }
-
+    public double getPrecio() {
+        return Precio;
+    }
+    public void setPrecio(double precio) {
+        Precio = precio;
+    }
     public byte getStatus() {
         return Status;
     }
-
     public void setStatus(byte status) {
         Status = status;
     }
-
     public byte getActivo() {
         return Activo;
     }
-
     public void setActivo(byte activo) {
         Activo = activo;
     }
 
-    public double getPrecio() {
-        return Precio;
+    public String getDescModelo() {
+        return DescModelo;
     }
 
-    public void setPrecio(double precio) {
-        Precio = precio;
+    public void setDescModelo(String descModelo) {
+        DescModelo = descModelo;
     }
 
     public  Producto cargarPorId(int idProducto) throws Exception {
+
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", idProducto);
@@ -94,12 +90,12 @@ public class Producto {
 
             if (dt.Rows.size() > 0) {
                 return loadProducto(dt.Rows.get(0));
-            } else {
-                throw new Exception("Producto no encontrado favor de validar sus credenciales");
             }
         } catch (Exception e) {
             throw new Exception("Error al buscar producto" + e.getMessage());
         }
+
+        return new Producto();
     }
     public  boolean Actualizar() throws Exception {
         try {
@@ -108,28 +104,29 @@ public class Producto {
             params.put("1", getId());
             params.put("2", getCodigo());
             params.put("3", getModelo().getId());
+            params.put("4", getDescripcion());
 
-            DataTable dt = new Persistencia().Query("CALL SP_Producto_Actualizar", params);
+            new Persistencia().ExceuteNonQuery("CALL SP_Producto_Actualizar", params);
             return true;
 
         } catch (Exception e) {
             throw new Exception("Error no se logro la modificacion" + e.getMessage());
         }
     }
-    public boolean ActualizarDescripcion() throws Exception {
+    private boolean ActualizarDescripcion() throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getId());
             params.put("2", getDescripcion());
 
-            DataTable dt = new Persistencia().Query("CALL SP_Producto_ActualizarDescripcion", params);
+            new Persistencia().ExceuteNonQuery("CALL SP_Producto_ActualizarDescripcion", params);
             return true;
 
         } catch (Exception e) {
             throw new Exception("Error no se logro la modificacion" + e.getMessage());
         }
     }
-    public  boolean Insertar() throws Exception {
+    public  int Insertar() throws Exception {
 
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -139,52 +136,58 @@ public class Producto {
             params.put("4", getModelo().getId());
 
             DataTable dt = new Persistencia().Query("CALL SP_Producto_Insertar", params);
-            return  true;
-        } catch (Exception e) {
-            throw new Exception("Error, producto ya existente" + e.getMessage());
+
+            return Integer.parseInt(dt.Rows.get(0).get("Id"));
+
+        }
+        catch (Exception e) {
+            throw new Exception("Error al insertar producto" + e.getMessage());
         }
     }
-    public  void ActualizarListaPrecios(MultipartFile file) {
+
+
+    public  void ActualizarListaPrecios(MultipartFile file) throws RuntimeException {
 
         try {
             List<Producto> productos = ExcelHelper.excelToProducts(file.getInputStream());
             for (Producto p : productos) {
-                Modelo m = new Modelo();
-                m = m.cargarPorDescripcion(p.getModelo().getDescripcion());
-                if (m.getId() > 0) {
-                    p.setModelo(m);
-                } else {
-                    p.setModelo(p.getModelo().Insertar());
-                }
-                Producto producto = cargarPorCodigo(p.getCodigo());
-                if (producto.getId() > 0){
-                    producto.setDescripcion(p.getDescripcion());
-                    producto.ActualizarDescripcion();
+                p.setIdUsuarioRegistro(1);
+                if (!p.getCodigo().equals("")) {
+                    Modelo m = new Modelo();
+                    m = m.cargarPorDescripcion(p.getModelo().getDescripcion());
+                    if (m.getId() > 0) {
+                        p.setModelo(m);
+                    } else {
+                        p.setModelo(p.getModelo().Insertar());
+                    }
+                    Producto producto = cargarPorCodigo(p.getCodigo());
+                    if (producto.getId() > 0) {
+                        producto.setDescripcion(p.getDescripcion());
+                        producto.ActualizarDescripcion();
 
-                    HistorialPrecioProducto hpp = new HistorialPrecioProducto(producto.getId());
-                    hpp.setIdProducto(producto.getId());
-                    hpp.DesactivarPorIdProducto();
-                    hpp.setPrecio(p.getPrecio());
-                    hpp.setIdUsuarioRegistro(1);
-                    hpp.Insertar();
-                } else {
-                    p.Insertar();
-
-                    HistorialPrecioProducto hpp = new HistorialPrecioProducto(producto.getId());
-                    hpp.setIdProducto(producto.getId());
-                    hpp.setPrecio(p.getPrecio());
-                    hpp.setIdUsuarioRegistro(1);
-                    hpp.Insertar();
+                        HistorialPrecioProducto hpp = new HistorialPrecioProducto(producto.getId());
+                        hpp.setIdProducto(producto.getId());
+                        hpp.DesactivarPorIdProducto();
+                        hpp.setPrecio(p.getPrecio());
+                        hpp.setIdUsuarioRegistro(1);
+                        hpp.Insertar();
+                    }
+                    else {
+                        int idProducto = p.Insertar();
+                        HistorialPrecioProducto hpp = new HistorialPrecioProducto();
+                        hpp.setIdProducto(idProducto);
+                        hpp.setPrecio(p.getPrecio());
+                        hpp.setIdUsuarioRegistro(1);
+                        hpp.Insertar();
+                    }
                 }
             }
-
         }
-        catch(Exception e) {
+        catch( Exception e ) {
             throw new RuntimeException("fail to store excel data: " + e.getMessage());
         }
     }
     public  Producto cargarPorCodigo(String codigo) throws Exception {
-
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", codigo);
@@ -193,12 +196,13 @@ public class Producto {
 
             if (dt.Rows.size() > 0) {
                 return loadProducto(dt.Rows.get(0));
-            } else {
-                throw new Exception("Producto no encontrado favor de validar sus credenciales");
             }
-        } catch (Exception e) {
-            throw new Exception("Error al buscar producto" + e.getMessage());
         }
+        catch (Exception e) {
+            throw new Exception("Error al buscar producto " + codigo + " " + e.getMessage());
+        }
+
+        return new Producto();
     }
 
     public  boolean Eliminar() throws Exception {
@@ -212,8 +216,21 @@ public class Producto {
             throw new Exception("Error no se logro la eliminacion" + e.getMessage());
         }
     }
-    public  ArrayList<Producto> Listar() throws Exception {
+
+    public static boolean ValidarCodigo(String codigo) throws Exception {
         try {
+            HashMap<String, Object> params = new HashMap<>();
+
+            DataTable dt = new Persistencia().Query("CALL SP_Producto_ValidarCodigo", params);
+            return true;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro la eliminacion" + e.getMessage());
+        }
+    }
+
+    public  ArrayList<Producto> Listar() throws Exception {
+        try
+        {
             ArrayList<Producto> result = new ArrayList<>();
             DataTable dt = new Persistencia().Query("CALL SP_Producto_Listar");
             if (dt.Rows.size() > 0) {
@@ -222,12 +239,12 @@ public class Producto {
                 }
             }
             return result;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new Exception("Error no se logro listar correctamente" + e.getMessage());
         }
     }
-    private  Producto loadProducto(Map<String, String> row) {
-
+    private  Producto loadProducto(Map<String, String> row) throws Exception {
         Producto p = new Producto();
         p.setId(Integer.parseInt(row.get("Id")));
         p.setCodigo(row.get("Codigo"));
@@ -239,7 +256,17 @@ public class Producto {
             p.setStatus(Byte.parseByte(row.get("Status")));
         if (row.get("Activo") != null)
             p.setActivo(Byte.parseByte(row.get("Activo")));
-
+        if(row.get("Precio") != null)
+            p.setPrecio(Double.parseDouble(row.get("Precio")));
+        if (row.get("DescripcionModelo") != null) {
+            p.setDescModelo(row.get("DescripcionModelo"));
+        }
+//        if (row.get("IdModelo") != null ) {
+//            Modelo m = new Modelo();
+//            m.setId(Integer.parseInt(row.get("IdModelo")));
+//            m = m.cargarPorId();
+//            p.setDescModelo(m.getDescripcion());
+//        }
         return p;
     }
 }
