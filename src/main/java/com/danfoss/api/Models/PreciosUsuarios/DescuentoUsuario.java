@@ -1,18 +1,23 @@
 package com.danfoss.api.Models.PreciosUsuarios;
 
+import com.danfoss.api.DataAccess.DataTable;
+import com.danfoss.api.DataAccess.Persistencia;
+
+import java.util.HashMap;
+
 public class DescuentoUsuario {
-    private int Id;
+    private int id;
     private int Porcentaje;
-    private int IdUsuario;
-    private int IdProducto;
+    private int idCliente;
+    private int idProducto;
     private byte Activo;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public int getPorcentaje() {
@@ -23,20 +28,20 @@ public class DescuentoUsuario {
         Porcentaje = porcentaje;
     }
 
-    public int getIdUsuario() {
-        return IdUsuario;
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        IdUsuario = idUsuario;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
     public int getIdProducto() {
-        return IdProducto;
+        return idProducto;
     }
 
     public void setIdProducto(int idProducto) {
-        IdProducto = idProducto;
+        this.idProducto = idProducto;
     }
 
     public byte getActivo() {
@@ -45,5 +50,21 @@ public class DescuentoUsuario {
 
     public void setActivo(byte activo) {
         Activo = activo;
+    }
+
+    public  int Insertar() throws Exception {
+
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getPorcentaje());
+            params.put("2", getIdCliente());
+            params.put("3", getIdProducto());
+
+            DataTable dt = new Persistencia().Query("CALL SP_DescuentosUsuario_Insertar", params);
+
+        } catch (Exception e) {
+            throw new Exception("Error" + e.getMessage());
+        }
+        return 0; // Checar return
     }
 }
