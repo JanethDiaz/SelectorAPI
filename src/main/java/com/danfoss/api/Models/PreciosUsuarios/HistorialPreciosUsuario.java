@@ -4,109 +4,77 @@ import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class HistorialPreciosUsuario {
-    private int Id;
-    private double Precio;
-    private int IdUsuarioRegistro;
-    private int IdProducto;
+    private int id;
+    private Double precio;
+    private int idPreciosUsuario;
+    private int idUsuarioRegistra;
     private byte Activo;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
-    public double getPrecio() {
-        return Precio;
+    public Double getPrecio() {
+        return precio;
     }
 
-    public void setPrecio(double precio) {
-        Precio = precio;
+    public void setPrecio(Double precio) {
+        this.precio = precio;
     }
 
-    public int getIdUsuarioRegistro() {
-        return IdUsuarioRegistro;
+    public int getIdPreciosUsuario() {
+        return idPreciosUsuario;
     }
 
-    public void setIdUsuarioRegistro(int idUsuarioRegistro) {
-        IdUsuarioRegistro = idUsuarioRegistro;
+    public void setIdPreciosUsuario(int idPreciosUsuario) {
+        this.idPreciosUsuario = idPreciosUsuario;
+    }
+
+    public int getIdUsuarioRegistra() {
+        return idUsuarioRegistra;
+    }
+
+    public void setIdUsuarioRegistra(int idUsuarioRegistra) {
+        this.idUsuarioRegistra = idUsuarioRegistra;
     }
 
     public byte getActivo() {
         return Activo;
     }
 
-    public int getIdProducto() {
-        return IdProducto;
-    }
-
-    public void setIdProducto(int idProducto) {
-        IdProducto = idProducto;
-    }
-
     public void setActivo(byte activo) {
         Activo = activo;
     }
 
-
-    public HistorialPreciosUsuario cargarPorId(int id) throws Exception {
-        try {
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("1", id);
-
-            DataTable dt = new Persistencia().Query("CALL SP_HistorialPreciosProducto_CargarPorId", params);
-
-            if (dt.Rows.size() > 0) {
-                return loadHistorial(dt.Rows.get(0));
-            } else {
-                throw new Exception("Produ" +
-                        "0cto no encontrado favor de validar sus credenciales");
-            }
-        } catch (Exception e) {
-            throw new Exception("Error al buscar producto" + e.getMessage());
-        }
-    }
-    public  boolean Insertar() throws Exception {
+    public  int Insertar() throws Exception {
 
         try {
             HashMap<String, Object> params = new HashMap<>();
-            params.put("1", getId());
-            params.put("2", getPrecio());
-            params.put("3", getIdUsuarioRegistro());
+            params.put("1", getIdPreciosUsuario());
+            params.put("2", getIdUsuarioRegistra());
 
-            DataTable dt = new Persistencia().Query("CALL SP_HistorialPreciosProducto_Insertar", params);
-            return  true;
+            DataTable dt = new Persistencia().Query("CALL SP_HistorialPreciosUsuario_Insertar", params);
+
         } catch (Exception e) {
             throw new Exception("Error" + e.getMessage());
         }
+        return 0;// Checar Return
     }
-    public  boolean DesactivarPorIdProducto () throws  Exception{
-            try {
-                HashMap<String, Object> params = new HashMap<>();
-                params.put("1", getIdProducto());
+    public  void DesactivarPorIdPrecioUsuario () throws  Exception{
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getIdPreciosUsuario());
 
-                DataTable dt = new Persistencia().Query("CALL SP_HistorialPreciosProducto_Desactivar");
-                return true;
+            DataTable dt = new Persistencia().Query("CALL SP_HistorialPreciosUsuario_Desactivar");
 
-
-            } catch (Exception e) {
-                throw new Exception("Error" + e.getMessage());
-            }
-    }
-
-    private HistorialPreciosUsuario loadHistorial(Map<String, String> row) {
-        HistorialPreciosUsuario H = new HistorialPreciosUsuario();
-
-        H.setId(Integer.parseInt(row.get("Id")));
-        H.setPrecio(Double.parseDouble("Precio"));
-        H.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistro")));
-        H.setActivo(Byte.parseByte(row.get("Activo")));
-
-        return H;
+        } catch (Exception e) {
+            throw new Exception("Error" + e.getMessage());
+        }
     }
 }
