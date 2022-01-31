@@ -19,11 +19,9 @@ public class Usuario {
     public int getId() {
         return id;
     }
-
     public void setId(int Id) {
         id = Id;
     }
-
     public String getUsuario() {
         return Usuario;
     }
