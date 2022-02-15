@@ -17,6 +17,7 @@ public class Producto {
     private String Descripcion;
     private int IdUsuarioRegistro;
     private Modelo modelo;
+    private String UrlProductStore;
     private byte Status;
     private byte Activo;
     private double Precio;
@@ -85,6 +86,14 @@ public class Producto {
         Precio = precio;
     }
 
+    public String getUrlProductStore() {
+        return UrlProductStore;
+    }
+
+    public void setUrlProductStore(String urlProductStore) {
+        UrlProductStore = urlProductStore;
+    }
+
     public  Producto cargarPorId(int idProducto) throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -107,7 +116,8 @@ public class Producto {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getId());
             params.put("2", getCodigo());
-            params.put("3", getModelo().getId());
+            params.put("3", getUrlProductStore());
+            params.put("4", getModelo().getId());
 
             DataTable dt = new Persistencia().Query("CALL SP_Producto_Actualizar", params);
             return true;
@@ -136,7 +146,8 @@ public class Producto {
             params.put("1", getCodigo());
             params.put("2", getDescripcion());
             params.put("3", getIdUsuarioRegistro());
-            params.put("4", getModelo().getId());
+            params.put("4", getUrlProductStore());
+            params.put("5", getModelo().getId());
 
             DataTable dt = new Persistencia().Query("CALL SP_Producto_Insertar", params);
             return  true;
@@ -234,6 +245,7 @@ public class Producto {
         if(row.get("IdUsuarioRegistra") != null)
             p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
         p.setModelo(new Modelo(Integer.parseInt(row.get("IdModelo"))));
+        p.setUrlProductStore(row.get("UrlProductStore"));
         if (row.get("Status") != null)
             p.setStatus(Byte.parseByte(row.get("Status")));
         if (row.get("Activo") != null)
