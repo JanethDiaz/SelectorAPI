@@ -34,7 +34,7 @@ public class AuthorizationServerConf  extends AuthorizationServerConfigurerAdapt
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("selector-web")
-                .secret(passwordEncoder.encode("selector123"))
+                .secret(passwordEncoder.encode("s3l3ctor*"))
                 .scopes("read", "write")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(86400)

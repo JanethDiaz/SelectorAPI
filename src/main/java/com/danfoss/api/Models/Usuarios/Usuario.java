@@ -15,6 +15,7 @@ public class Usuario {
     private int IdTipoUsuuario;
     private byte Status;
     private byte Activo;
+    private TipoUsuario tipoUsuario;
 
     public int getId() {
         return id;
@@ -70,6 +71,14 @@ public class Usuario {
         Activo = activo;
     }
 
+    public TipoUsuario getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(TipoUsuario tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
+    }
+
     public static Usuario cargarPorNombre(String username) throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -97,6 +106,28 @@ public class Usuario {
         } catch (Exception e) {
             throw new Exception("Error al buscar el usuario" + e.getMessage());
         }
+    }
+
+    public Usuario login() throws Exception{
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getUsuario());
+            params.put("2", getPasword());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Usuario_Login", params);
+            if (dt.Rows.size() > 0) {
+                Usuario u = new Usuario();
+                Map<String, String> row = dt.Rows.get(0);
+                u.setId(Integer.parseInt(row.get("Id")));
+//                u.setIdTipoUsuuario(Integer.parseInt(row.get("IdTipoUsuario")));
+                u.setTipoUsuario(new TipoUsuario(Integer.parseInt(row.get("IdTipoUsuario")), row.get("Descripcion")));
+                return u;
+            }
+        }
+        catch (Exception e) {
+            throw new Exception("Error al buscar el usuario" + e.getMessage());
+        }
+        return new Usuario();
     }
 
     public  boolean Insertar() throws Exception {
@@ -132,13 +163,15 @@ public class Usuario {
     }
 
     public  boolean Eliminar() throws Exception {
-        try {
+        try
+        {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getId());
 
             DataTable dt = new Persistencia().Query("CALL SP_Usuario_Eliminar", params);
             return true;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new Exception("Error no se logro la Eliminacion" + e.getMessage());
         }
     }

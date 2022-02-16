@@ -8,24 +8,25 @@ public class TipoUsuario {
     public int getId() {
         return Id;
     }
-
     public void setId(int id) {
         Id = id;
     }
-
     public String getDescripcion() {
         return Descripcion;
     }
-
     public void setDescripcion(String descripcion) {
         Descripcion = descripcion;
     }
-
     public byte getActivo() {
         return Activo;
     }
-
     public void setActivo(byte activo) {
         Activo = activo;
+    }
+
+    public TipoUsuario(){}
+    public TipoUsuario(int id, String descripcion) {
+        setId(id);
+        setDescripcion(descripcion);
     }
 }
