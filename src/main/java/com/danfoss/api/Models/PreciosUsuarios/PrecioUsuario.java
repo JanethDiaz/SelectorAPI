@@ -52,7 +52,7 @@ public class PrecioUsuario {
             DataTable dt = new Persistencia().Query("CALL SP_PreciosUsuario_Insertar", params);
 
         } catch (Exception e) {
-            throw new Exception("Error al insertar" + e.getMessage());
+            throw new Exception("Error no se logro insertar" + e.getMessage());
         }
         return 0;// checar return
     }

@@ -73,7 +73,7 @@ public class HistorialPrecioProducto {
                 throw new Exception("Producto no encontrado favor de validar sus credenciales");
             }
         } catch (Exception e) {
-            throw new Exception("Error al buscar producto" + e.getMessage());
+            throw new Exception("Error al cargar" + e.getMessage());
         }
     }
     public  boolean Insertar() throws Exception {
@@ -87,7 +87,7 @@ public class HistorialPrecioProducto {
             DataTable dt = new Persistencia().Query("CALL SP_HistorialPreciosProducto_Insertar", params);
             return  true;
         } catch (Exception e) {
-            throw new Exception("Error" + e.getMessage());
+            throw new Exception("Error no se logro insertar" + e.getMessage());
         }
     }
     public  boolean DesactivarPorIdProducto () throws  Exception{
@@ -100,7 +100,7 @@ public class HistorialPrecioProducto {
 
 
             } catch (Exception e) {
-                throw new Exception("Error" + e.getMessage());
+                throw new Exception("Error no se logro desactivar " + e.getMessage());
             }
     }
 

@@ -54,7 +54,7 @@ public class UsuarioSeleccion {
             DataTable dt = new Persistencia().Query("CALL SP_UsuarioSeleccion_Insertar", params);
             return  true;
         } catch (Exception e) {
-            throw new Exception("Error" + e.getMessage());
+            throw new Exception("Error no se logro insertar" + e.getMessage());
         }
     }
     public  boolean Actualizar() throws Exception {
@@ -69,7 +69,7 @@ public class UsuarioSeleccion {
             return true;
 
         } catch (Exception e) {
-            throw new Exception("Error no se logro la modificacion" + e.getMessage());
+            throw new Exception("Error no se logro actualizar" + e.getMessage());
         }
     }
 
@@ -81,7 +81,7 @@ public class UsuarioSeleccion {
             DataTable dt = new Persistencia().Query("CALL SP_UsuarioSeleccion_Eliminar", params);
             return true;
         } catch (Exception e) {
-            throw new Exception("Error no se logro la eliminacion" + e.getMessage());
+            throw new Exception("Error no se logro eliminar" + e.getMessage());
         }
     }
 
@@ -98,7 +98,7 @@ public class UsuarioSeleccion {
                 throw new Exception("Usuario no encontrado favor de validar sus credenciales");
             }
         } catch (Exception e) {
-            throw new Exception("Error al buscar Usuario" + e.getMessage());
+            throw new Exception("Error al cargar" + e.getMessage());
         }
     }
     private  UsuarioSeleccion loadUsuarioSeleccion(Map<String, String> row) {

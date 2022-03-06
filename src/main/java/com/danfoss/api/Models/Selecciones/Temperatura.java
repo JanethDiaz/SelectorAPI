@@ -54,7 +54,7 @@ public class Temperatura {
             DataTable dt = new Persistencia().Query("CALL SP_Temperatura_Insertar", params);
             return  true;
         } catch (Exception e) {
-            throw new Exception("Error" + e.getMessage());
+            throw new Exception("Error no se logro insertar" + e.getMessage());
         }
     }
     public  boolean Actualizar() throws Exception {
@@ -68,7 +68,7 @@ public class Temperatura {
             return true;
 
         } catch (Exception e) {
-            throw new Exception("Error no se logro la modificacion" + e.getMessage());
+            throw new Exception("Error no se logro actualizar" + e.getMessage());
         }
     }
 
@@ -80,7 +80,7 @@ public class Temperatura {
             DataTable dt = new Persistencia().Query("CALL SP_Temperatura_Eliminar", params);
             return true;
         } catch (Exception e) {
-            throw new Exception("Error no se logro la eliminacion" + e.getMessage());
+            throw new Exception("Error no se logro eliminar " + e.getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ public class Temperatura {
             }
             return result;
         } catch (Exception e) {
-            throw new Exception("Error no se logro listar correctamente" + e.getMessage());
+            throw new Exception("Error no se logro listar" + e.getMessage());
         }
     }
 

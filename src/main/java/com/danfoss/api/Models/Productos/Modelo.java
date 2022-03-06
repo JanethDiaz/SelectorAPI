@@ -58,7 +58,7 @@ public class Modelo {
 
         }
         catch (Exception e) {
-                throw new Exception("error" + e.getMessage());
+                throw new Exception("error no se logro cargar" + e.getMessage());
         }
         return new Modelo();
     }
@@ -73,7 +73,7 @@ public class Modelo {
                 result = loadModelo(dt.Rows.get(0));
             }
         } catch (Exception e) {
-            throw new Exception("Error, producto ya existente" + e.getMessage());
+            throw new Exception("Error no se logro insertar" + e.getMessage());
         }
         return result;
     }

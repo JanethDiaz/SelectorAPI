@@ -62,7 +62,7 @@ public class HistorialPreciosUsuario {
             DataTable dt = new Persistencia().Query("CALL SP_HistorialPreciosUsuario_Insertar", params);
 
         } catch (Exception e) {
-            throw new Exception("Error" + e.getMessage());
+            throw new Exception("Error no se logro insertar" + e.getMessage());
         }
         return 0;// Checar Return
     }
@@ -74,7 +74,7 @@ public class HistorialPreciosUsuario {
             DataTable dt = new Persistencia().Query("CALL SP_HistorialPreciosUsuario_Desactivar");
 
         } catch (Exception e) {
-            throw new Exception("Error" + e.getMessage());
+            throw new Exception("Error no se logro desactivar" + e.getMessage());
         }
     }
 }

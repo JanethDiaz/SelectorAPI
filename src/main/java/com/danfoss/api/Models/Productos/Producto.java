@@ -107,7 +107,7 @@ public class Producto {
                 throw new Exception("Producto no encontrado favor de validar sus credenciales");
             }
         } catch (Exception e) {
-            throw new Exception("Error al buscar producto" + e.getMessage());
+            throw new Exception("Error no se logro cargar por Id" + e.getMessage());
         }
     }
     public  boolean Actualizar() throws Exception {
@@ -123,7 +123,7 @@ public class Producto {
             return true;
 
         } catch (Exception e) {
-            throw new Exception("Error no se logro la modificacion" + e.getMessage());
+            throw new Exception("Error no se logro actualizar" + e.getMessage());
         }
     }
     public boolean ActualizarDescripcion() throws Exception {
@@ -136,7 +136,7 @@ public class Producto {
             return true;
 
         } catch (Exception e) {
-            throw new Exception("Error no se logro la modificacion" + e.getMessage());
+            throw new Exception("Error no se logro actualizar descripcion" + e.getMessage());
         }
     }
     public  boolean Insertar() throws Exception {
@@ -152,7 +152,7 @@ public class Producto {
             DataTable dt = new Persistencia().Query("CALL SP_Producto_Insertar", params);
             return  true;
         } catch (Exception e) {
-            throw new Exception("Error, producto ya existente" + e.getMessage());
+            throw new Exception("Error no se logro insertar" + e.getMessage());
         }
     }
     public  void ActualizarListaPrecios(MultipartFile file) {
@@ -190,7 +190,7 @@ public class Producto {
             }
 
         }catch(Exception e){
-            throw new RuntimeException("fail to store excel data: " + e.getMessage());
+            throw new RuntimeException("error no se logro actualizar lista de precios " + e.getMessage());
         }
     }
     public  Producto cargarPorCodigo(String codigo) throws Exception {
@@ -207,7 +207,7 @@ public class Producto {
                 throw new Exception("Producto no encontrado favor de validar sus credenciales");
             }
         } catch (Exception e) {
-            throw new Exception("Error al buscar producto" + e.getMessage());
+            throw new Exception("Error no se logro cargar por codigo" + e.getMessage());
         }
     }
 
@@ -219,7 +219,7 @@ public class Producto {
             DataTable dt = new Persistencia().Query("CALL SP_Producto_Eliminar", params);
             return true;
         } catch (Exception e) {
-            throw new Exception("Error no se logro la eliminacion" + e.getMessage());
+            throw new Exception("Error no se logro eliminar" + e.getMessage());
         }
     }
     public  ArrayList<Producto> Listar() throws Exception {
@@ -233,7 +233,7 @@ public class Producto {
             }
             return result;
         } catch (Exception e) {
-            throw new Exception("Error no se logro listar correctamente" + e.getMessage());
+            throw new Exception("Error no se logro listar" + e.getMessage());
         }
     }
     private  Producto loadProducto(Map<String, String> row) {
