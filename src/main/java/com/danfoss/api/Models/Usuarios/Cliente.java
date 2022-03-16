@@ -180,11 +180,40 @@ public class Cliente {
         {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getId());
+
             new Persistencia().ExceuteNonQuery("CALL SP_Cliente_Eliminar", params);
             return true;
         }
         catch (Exception e) {
             throw new Exception("Error al eliminar el cliente " + e.getMessage());
+        }
+    }
+
+    public boolean Desactivar() throws Exception {
+        try
+        {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+
+            new Persistencia().ExceuteNonQuery("CALL SP_Cliente_Desactivar", params);
+            return true;
+        }
+        catch (Exception e) {
+            throw new Exception("Error al desactivar cliente " + e.getMessage());
+        }
+    }
+
+    public boolean Activar() throws Exception {
+        try
+        {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+
+            new Persistencia().ExceuteNonQuery("CALL SP_Cliente_Activar", params);
+            return true;
+        }
+        catch (Exception e) {
+            throw new Exception("Error al activar cliente " + e.getMessage());
         }
     }
 

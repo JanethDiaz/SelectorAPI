@@ -2,6 +2,7 @@ package com.danfoss.api.Controllers;
 
 import com.danfoss.api.Models.Usuarios.Cliente;
 import com.danfoss.api.Models.Usuarios.TipoCliente;
+import com.danfoss.api.Models.Usuarios.Usuario;
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class ClienteController {
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -33,7 +34,7 @@ public class ClienteController {
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar cbo tipoCliente" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar el tipo de cliente" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -42,13 +43,16 @@ public class ClienteController {
         try
         {
             cliente.Insertar();
-            return new ResponseEntity<>(new Gson().toJson("Cliente guardado con éxito"), HttpStatus.OK);
+            return new ResponseEntity<>(new Gson().toJson("Cliente insertado con exito"), HttpStatus.OK);
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de insertar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    //EL CONTROLADOR Y EL METODO DE CLIENTE ELIMINAR YA ESTABAN CERADOS EXCEPTO EN LA BASE DE DATOS
+    //YO CREO UNO DE LOS DOS PUDO HABER ELIMINADO EL SP EN LA BASE DE DATOS.
 
     @RequestMapping(value = "/eliminar",  method = RequestMethod.POST)
     public ResponseEntity<?> eliminar(@RequestBody Cliente cliente){
@@ -59,7 +63,59 @@ public class ClienteController {
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de eliminar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/Desactivar",  method = RequestMethod.POST)
+    public ResponseEntity<?> Desactivar(@RequestBody Cliente cliente){
+        try
+        {
+            cliente.Desactivar();
+            return new ResponseEntity<>(new Gson().toJson("El cliente se desactivo con éxito"), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Desactivar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/Desactivar",  method = RequestMethod.POST)
+    public ResponseEntity<?> Desactivar(@RequestBody Usuario usuario){
+        try
+        {
+            usuario.Desactivar();
+            return new ResponseEntity<>(new Gson().toJson("El Usuario se desactivo con éxito"), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Desactivar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/Activar",  method = RequestMethod.POST)
+    public ResponseEntity<?> Activar(@RequestBody Cliente cliente){
+        try
+        {
+            cliente.Activar();
+            return new ResponseEntity<>(new Gson().toJson("El cliente se activo con éxito"), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de activar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/Activar",  method = RequestMethod.POST)
+    public ResponseEntity<?> Activar(@RequestBody Usuario usuario){
+        try
+        {
+            usuario.Activar();
+            return new ResponseEntity<>(new Gson().toJson("El Usuario se activo con éxito"), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de activar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -71,7 +127,7 @@ public class ClienteController {
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al actualizar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

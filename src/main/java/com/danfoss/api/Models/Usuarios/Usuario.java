@@ -174,6 +174,48 @@ public class Usuario {
         }
     }
 
+    public  boolean Desactivar() throws Exception {
+        try
+        {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Usuario_Desactivar", params);
+            return true;
+        }
+        catch (Exception e) {
+            throw new Exception("Error no se logro Desactivar" + e.getMessage());
+        }
+    }
+
+    public  boolean Activar() throws Exception {
+        try
+        {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Usuario_Activar", params);
+            return true;
+        }
+        catch (Exception e) {
+            throw new Exception("Error no se logro Activar" + e.getMessage());
+        }
+    }
+
+    public  boolean EliminarPorIdCliente() throws Exception {
+        try
+        {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getIdCliente());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Usuario_EliminarPorIdCliente", params);
+            return true;
+        }
+        catch (Exception e) {
+            throw new Exception("Error no se logro eliminar" + e.getMessage());
+        }
+    }
+
     public  ArrayList<Usuario> Listar() throws Exception {
         try {
             ArrayList<Usuario> result = new ArrayList<>();

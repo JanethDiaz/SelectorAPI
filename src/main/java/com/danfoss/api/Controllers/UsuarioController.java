@@ -16,11 +16,11 @@ public class UsuarioController {
         try
         {
             usuario.Insertar();
-            return new ResponseEntity<>(new Gson().toJson("Usuario guardado con éxito"), HttpStatus.OK);
+            return new ResponseEntity<>(new Gson().toJson("Usuario insertado con éxito"), HttpStatus.OK);
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de insertar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de insertar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @RequestMapping(value = "/actualizar",  method = RequestMethod.PUT)
@@ -31,7 +31,7 @@ public class UsuarioController {
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Modificar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de actualizar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -45,7 +45,7 @@ public class UsuarioController {
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Eliminar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Eliminar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @RequestMapping(value = "/listar",  method = RequestMethod.GET)
@@ -57,7 +57,7 @@ public class UsuarioController {
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -70,7 +70,7 @@ public class UsuarioController {
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
