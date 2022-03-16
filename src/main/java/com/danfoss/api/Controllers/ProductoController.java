@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductoController {
 
     @RequestMapping(value = "/insertar", method = RequestMethod.POST)
-    public ResponseEntity<?> Listar(@RequestBody Producto producto) {
+    public ResponseEntity<?> Insertar(@RequestBody Producto producto) {
         try
         {
             int idProducto =  producto.Insertar();
@@ -21,10 +21,10 @@ public class ProductoController {
             hpp.setPrecio(producto.getPrecio());
             hpp.setIdUsuarioRegistro(1);
             hpp.Insertar();
-            return new ResponseEntity<>(new Gson().toJson("Producto insertado"), HttpStatus.OK);
+            return new ResponseEntity<>(new Gson().toJson("Producto guardado con éxito"), HttpStatus.OK);
         }
         catch (Exception e) {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de cargar productos" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de guardar el producto " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -58,7 +58,8 @@ public class ProductoController {
     public ResponseEntity<?>  Actualizar(@RequestBody Producto producto) {
         try
         {
-            return new ResponseEntity<>(new Gson().toJson(producto.Actualizar()), HttpStatus.OK);
+            producto.Actualizar();
+            return new ResponseEntity<>(new Gson().toJson("Producto actualizado con éxito"), HttpStatus.OK);
         }
         catch (Exception e)
         {
@@ -79,16 +80,12 @@ public class ProductoController {
         }
     }
 
-
-
-    @RequestMapping(value = "/validar", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<?> validar(@RequestParam("codigo") String codigo) {
+    @RequestMapping(value = "/validar", method = RequestMethod.POST)
+    public ResponseEntity<?> validar(@RequestBody Producto producto) {
         try
         {
-            Producto p = new Producto();
-            p.cargarPorCodigo(codigo);
-            if ( p.getId() > 0 ) {
+            producto = producto.cargarPorCodigo(producto.getCodigo());
+            if ( producto.getId() > 0 ) {
                 return new ResponseEntity<>(new Gson().toJson(true), HttpStatus.OK);
             }
             else {

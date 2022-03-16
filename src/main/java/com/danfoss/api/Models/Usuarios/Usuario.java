@@ -9,14 +9,14 @@ import java.util.Map;
 public class Usuario {
     private int id;
     private String Usuario;
-    private String Pasword;
+    private String Password;
     //private DateTimeFormat FechaRegistro;
     private int IdUsuarioRegistra;
     private int IdTipoUsuuario;
+    private int IdCliente;
     private byte Status;
     private byte Activo;
     private TipoUsuario tipoUsuario;
-
     public int getId() {
         return id;
     }
@@ -26,57 +26,50 @@ public class Usuario {
     public String getUsuario() {
         return Usuario;
     }
-
     public void setUsuario(String usuario) {
         Usuario = usuario;
     }
-
-    public String getPasword() {
-        return Pasword;
+    public String getPassword() {
+        return Password;
     }
-
-    public void setPasword(String pasword) {
-        Pasword = pasword;
+    public void setPassword(String password) {
+        Password = password;
     }
-
     public int getIdUsuarioRegistra() {
         return IdUsuarioRegistra;
     }
-
     public void setIdUsuarioRegistra(int idUsuarioRegistra) {
         IdUsuarioRegistra = idUsuarioRegistra;
     }
-
     public int getIdTipoUsuuario() {
         return IdTipoUsuuario;
     }
-
     public void setIdTipoUsuuario(int idTipoUsuuario) {
         IdTipoUsuuario = idTipoUsuuario;
     }
-
     public byte getStatus() {
         return Status;
     }
-
     public void setStatus(byte status) {
         Status = status;
     }
-
     public byte getActivo() {
         return Activo;
     }
-
     public void setActivo(byte activo) {
         Activo = activo;
     }
-
     public TipoUsuario getTipoUsuario() {
         return tipoUsuario;
     }
-
     public void setTipoUsuario(TipoUsuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
+    }
+    public int getIdCliente() {
+        return IdCliente;
+    }
+    public void setIdCliente(int idCliente) {
+        this.IdCliente = idCliente;
     }
 
     public static Usuario cargarPorNombre(String username) throws Exception {
@@ -93,7 +86,10 @@ public class Usuario {
                 u.setId(Integer.parseInt(row.get("Id")));
                 u.setUsuario(row.get("Usuario"));
                 if(row.get("Password") != null ) {
-                    u.setPasword(row.get("Password"));
+                    u.setPassword(row.get("Password"));
+                }
+                if (row.get("IdCliente") != null ) {
+                    u.setIdCliente(Integer.parseInt(row.get("IdCliente")));
                 }
                 u.setIdTipoUsuuario(Integer.parseInt(row.get("IdTipoUsuario")));
                 u.setStatus(Byte.parseByte(row.get("Status")));
@@ -104,7 +100,7 @@ public class Usuario {
                 throw new Exception("Usuario no encontrado favor de verificar sus credenciales");
             }
         } catch (Exception e) {
-            throw new Exception("Error al buscar el usuario" + e.getMessage());
+            throw new Exception("Error al cargar el usuario por nombre " + e);
         }
     }
 
@@ -112,20 +108,20 @@ public class Usuario {
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getUsuario());
-            params.put("2", getPasword());
+            params.put("2", getPassword());
 
             DataTable dt = new Persistencia().Query("CALL SP_Usuario_Login", params);
             if (dt.Rows.size() > 0) {
                 Usuario u = new Usuario();
                 Map<String, String> row = dt.Rows.get(0);
                 u.setId(Integer.parseInt(row.get("Id")));
-//                u.setIdTipoUsuuario(Integer.parseInt(row.get("IdTipoUsuario")));
                 u.setTipoUsuario(new TipoUsuario(Integer.parseInt(row.get("IdTipoUsuario")), row.get("Descripcion")));
+                u.setStatus(Byte.parseByte(row.get("Status")));
                 return u;
             }
         }
         catch (Exception e) {
-            throw new Exception("Error al buscar el usuario" + e.getMessage());
+            throw new Exception("Error al loguear el usuario " + e);
         }
         return new Usuario();
     }
@@ -135,14 +131,16 @@ public class Usuario {
 
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getUsuario());
-            params.put("2", getPasword());
-            params.put("3", getIdUsuarioRegistra());
-            params.put("4", getIdTipoUsuuario());
+            params.put("2", getPassword());
+            params.put("3", 1);
+            params.put("4", 3);
+            params.put("5", getIdCliente());
 
-            DataTable dt = new Persistencia().Query("CALL SP_Usuario_Insertar", params);
+            new Persistencia().ExceuteNonQuery("CALL SP_Usuario_Insertar", params);
             return true;
-        } catch (Exception e) {
-            throw new Exception("Error, Usuario ya registrado." + e.getMessage());
+        }
+        catch (Exception e) {
+            throw new Exception("Error al insertar el usuario " + e.getMessage());
         }
     }
 
@@ -191,16 +189,34 @@ public class Usuario {
         }
     }
 
+    public  ArrayList<Usuario> ListarPorCliente(int idCliente) throws Exception {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", idCliente);
+
+            ArrayList<Usuario> result = new ArrayList<>();
+            DataTable dt = new Persistencia().Query("CALL SP_Usuario_ListarPorIdCliente", params);
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadUsuario(row));
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro Listar los usuarios del cliente" + e.getMessage());
+        }
+    }
+
     private  Usuario loadUsuario(Map<String, String> row) {
         Usuario u = new Usuario();
         u.setId(Integer.parseInt(row.get("Id")));
         u.setUsuario(row.get("Usuario"));
         if(row.get("Password") != null ) {
-            u.setPasword(row.get("Password"));
+            u.setPassword(row.get("Password"));
         }
-        u.setIdTipoUsuuario(Integer.parseInt(row.get("IdTipoUsuario")));
+//        u.setIdTipoUsuuario(Integer.parseInt(row.get("IdTipoUsuario")));
         u.setStatus(Byte.parseByte(row.get("Status")));
-        u.setActivo(Byte.parseByte(row.get("Activo")));
+//        u.setActivo(Byte.parseByte(row.get("Activo")));
 
         return u;
     }

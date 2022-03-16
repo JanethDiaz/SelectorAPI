@@ -58,7 +58,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     private UsernamePasswordAuthenticationToken loginBD(String nombreUsuario, String password) {
         Usuario usuarioApp = new Usuario();
         usuarioApp.setUsuario(nombreUsuario);
-        usuarioApp.setPasword(password);
+        usuarioApp.setPassword(password);
         try
         {
             usuarioApp =  usuarioApp.login();
@@ -69,7 +69,12 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         }
 
         if ( usuarioApp.getId() > 0 ) {
-            return token(nombreUsuario, password, usuarioApp.getTipoUsuario());
+            if (usuarioApp.getStatus() == 1) {
+                return token(nombreUsuario, password, usuarioApp.getTipoUsuario());
+            }
+            else {
+                throw new BadCredentialsException("Usuario Bloqueado");
+            }
         }
         else {
             throw new BadCredentialsException("usuario/contraseña incorrecta");

@@ -11,7 +11,9 @@ public class TipoCliente {
     private String DescripcionTipoCliente;
 
     public TipoCliente() {}
-    public TipoCliente(int idTipoCliente) {}
+    public TipoCliente(int idTipoCliente) {
+        setId(idTipoCliente);
+    }
 
     public int getId() {
         return id;

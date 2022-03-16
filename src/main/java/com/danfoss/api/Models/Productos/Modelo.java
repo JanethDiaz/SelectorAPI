@@ -46,7 +46,7 @@ public class Modelo {
         this.setDescripcion(desc);
     }
 
-    public  Modelo cargarPorDescripcion(String modelo) throws Exception {
+    public  Modelo cargarPorDescripcion(String modelo)  {
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", modelo);
@@ -59,7 +59,7 @@ public class Modelo {
 
         }
         catch (Exception e) {
-                throw new Exception("error" + e.getMessage());
+                e.printStackTrace();
         }
         return new Modelo();
     }
@@ -98,9 +98,10 @@ public class Modelo {
         }
         return result;
     }
-    public  Modelo Insertar() throws Exception {
+    public  Modelo Insertar() {
         Modelo result = new Modelo();
-        try {
+        try
+        {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getDescripcion());
 
@@ -108,8 +109,9 @@ public class Modelo {
             if (dt.Rows.size() > 0) {
                 result = loadModelo(dt.Rows.get(0));
             }
-        } catch (Exception e) {
-            throw new Exception("Error, producto ya existente" + e.getMessage());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
         return result;
     }

@@ -1,17 +1,25 @@
 package com.danfoss.api.Security;
 
+import com.danfoss.api.Models.Usuarios.Cliente;
+import com.danfoss.api.Models.Usuarios.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableAuthorizationServer
@@ -46,12 +54,39 @@ public class AuthorizationServerConf  extends AuthorizationServerConfigurerAdapt
         endpoints.authenticationManager(authenticationManager).accessTokenConverter(accessTokenConverter());
     }
 
+
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
-        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-        jwtAccessTokenConverter.setSigningKey(RSA_PRIVATE);
-        jwtAccessTokenConverter.setVerifierKey(RSA_PUBLIC);
-        return jwtAccessTokenConverter;
+        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter(){
+            @Override
+            public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+                if(authentication.getOAuth2Request().getGrantType().equalsIgnoreCase("password")) {
+                    final Map<String, Object> additionalInfo = new HashMap<>();
+                    try
+                    {
+                        Usuario usuario = Usuario.cargarPorNombre(authentication.getName());
+                        Cliente cliente = new Cliente();
+                        if (usuario.getIdCliente() > 0 ) {
+                            cliente.setId(usuario.getIdCliente());
+                            cliente = cliente.CargarPorId();
+                        }
+                        additionalInfo.put("idUsuario", usuario.getId());
+                        additionalInfo.put("idTipoUsuario", usuario.getIdTipoUsuuario());
+                        additionalInfo.put("cliente", cliente);
+                        ((DefaultOAuth2AccessToken) accessToken)
+                                .setAdditionalInformation(additionalInfo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                accessToken = super.enhance(accessToken, authentication);
+                ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(new HashMap<>());
+                return accessToken;
+            }
+        };
+        converter.setSigningKey(RSA_PRIVATE);
+        converter.setVerifierKey(RSA_PUBLIC);
+        return converter;
     }
 
     private static final String RSA_PRIVATE = "-----BEGIN RSA PRIVATE KEY-----\n" +

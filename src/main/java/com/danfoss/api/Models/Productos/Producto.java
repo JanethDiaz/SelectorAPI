@@ -16,6 +16,7 @@ public class Producto {
     private String Descripcion;
     private int IdUsuarioRegistro;
     private Modelo modelo;
+    private String UrlProductStore;
     private byte Status;
     private byte Activo;
     private double Precio;
@@ -78,6 +79,14 @@ public class Producto {
         DescModelo = descModelo;
     }
 
+    public String getUrlProductStore() {
+        return UrlProductStore;
+    }
+
+    public void setUrlProductStore(String urlProductStore) {
+        UrlProductStore = urlProductStore;
+    }
+
     public  Producto cargarPorId(int idProducto) throws Exception {
 
         try {
@@ -103,6 +112,7 @@ public class Producto {
             params.put("2", getCodigo());
             params.put("3", getModelo().getId());
             params.put("4", getDescripcion());
+            params.put("5", getUrlProductStore());
 
             new Persistencia().ExceuteNonQuery("CALL SP_Producto_Actualizar", params);
             return true;
@@ -124,14 +134,15 @@ public class Producto {
             throw new Exception("Error no se logro la modificacion" + e.getMessage());
         }
     }
-    public  int Insertar() throws Exception {
-
-        try {
+    public  int Insertar() {
+        try
+        {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getCodigo());
             params.put("2", getDescripcion());
             params.put("3", getIdUsuarioRegistro());
             params.put("4", getModelo().getId());
+            params.put("5", getUrlProductStore());
 
             DataTable dt = new Persistencia().Query("CALL SP_Producto_Insertar", params);
 
@@ -139,14 +150,18 @@ public class Producto {
 
         }
         catch (Exception e) {
-            throw new Exception("Error al insertar producto" + e.getMessage());
+            //throw new Exception( "Error al insertar producto " + e );
+            e.printStackTrace();
         }
+
+        return 0;
     }
 
 
     public  void ActualizarListaPrecios(MultipartFile file) throws RuntimeException {
 
-        try {
+        try
+        {
             List<Producto> productos = ExcelHelper.excelToProducts(file.getInputStream());
             for (Producto p : productos) {
                 p.setIdUsuarioRegistro(1);
@@ -156,7 +171,12 @@ public class Producto {
                     if (m.getId() > 0) {
                         p.setModelo(m);
                     } else {
+//                        Modelo model = p.getModelo().Insertar();
+//                        if (model.getId() > 0 ) {
+//                            p.setModelo( model);
+//                        }
                         p.setModelo(p.getModelo().Insertar());
+
                     }
                     Producto producto = cargarPorCodigo(p.getCodigo());
                     if (producto.getId() > 0) {
@@ -171,12 +191,16 @@ public class Producto {
                         hpp.Insertar();
                     }
                     else {
-                        int idProducto = p.Insertar();
-                        HistorialPrecioProducto hpp = new HistorialPrecioProducto();
-                        hpp.setIdProducto(idProducto);
-                        hpp.setPrecio(p.getPrecio());
-                        hpp.setIdUsuarioRegistro(1);
-                        hpp.Insertar();
+                        if ( p.getModelo().getId() > 0 ) {
+                            int idProducto = p.Insertar();
+                            if (idProducto > 0) {
+                                HistorialPrecioProducto hpp = new HistorialPrecioProducto();
+                                hpp.setIdProducto(idProducto);
+                                hpp.setPrecio(p.getPrecio());
+                                hpp.setIdUsuarioRegistro(1);
+                                hpp.Insertar();
+                            }
+                        }
                     }
                 }
             }
@@ -247,24 +271,22 @@ public class Producto {
         p.setId(Integer.parseInt(row.get("Id")));
         p.setCodigo(row.get("Codigo"));
         p.setDescripcion(row.get("Descripcion"));
-        if(row.get("IdUsuarioRegistra") != null)
-            p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
         p.setModelo(new Modelo(Integer.parseInt(row.get("IdModelo"))));
+
+        if(row.get("UrlProductStore") != null )
+            p.setUrlProductStore(row.get("UrlProductStore"));
         if (row.get("Status") != null)
             p.setStatus(Byte.parseByte(row.get("Status")));
         if (row.get("Activo") != null)
             p.setActivo(Byte.parseByte(row.get("Activo")));
         if(row.get("Precio") != null)
             p.setPrecio(Double.parseDouble(row.get("Precio")));
-        if (row.get("DescripcionModelo") != null) {
+        if (row.get("DescripcionModelo") != null)
             p.setDescModelo(row.get("DescripcionModelo"));
-        }
-//        if (row.get("IdModelo") != null ) {
-//            Modelo m = new Modelo();
-//            m.setId(Integer.parseInt(row.get("IdModelo")));
-//            m = m.cargarPorId();
-//            p.setDescModelo(m.getDescripcion());
-//        }
+        if(row.get("IdUsuarioRegistra") != null)
+            p.setIdUsuarioRegistro(Integer.parseInt(row.get("IdUsuarioRegistra")));
+        if(row.get("UrlProductStore") != null)
+            p.setUrlProductStore(row.get("UrlProductStore"));
         return p;
     }
 }

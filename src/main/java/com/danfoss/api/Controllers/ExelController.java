@@ -24,8 +24,8 @@ public class ExelController {
         String message;
 
         if (ExcelHelper.hasExcelFormat(file)) {
-            try {
-               // fileService.save(file);
+            try
+            {
                 Producto p = new Producto();
                 p.ActualizarListaPrecios(file);
                 message = "Uploaded the file successfully: " + file.getOriginalFilename();

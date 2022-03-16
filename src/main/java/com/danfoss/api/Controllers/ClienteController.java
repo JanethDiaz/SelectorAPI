@@ -41,8 +41,21 @@ public class ClienteController {
     public ResponseEntity<?> Insertar(@RequestBody Cliente cliente){
         try
         {
+            cliente.Insertar();
+            return new ResponseEntity<>(new Gson().toJson("Cliente guardado con éxito"), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-            return new ResponseEntity<>(new Gson().toJson(cliente.Insertar()), HttpStatus.OK);
+    @RequestMapping(value = "/eliminar",  method = RequestMethod.POST)
+    public ResponseEntity<?> eliminar(@RequestBody Cliente cliente){
+        try
+        {
+            cliente.Eliminar();
+            return new ResponseEntity<>(new Gson().toJson("El cliente se eliminó con éxito"), HttpStatus.OK);
         }
         catch (Exception e)
         {
