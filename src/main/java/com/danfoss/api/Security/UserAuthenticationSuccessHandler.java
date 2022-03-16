@@ -21,6 +21,5 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
             e.printStackTrace();
         }
         httpServletRequest.getSession().setAttribute("idUsuarioAPP", usuarioApp.getId());
-        httpServletResponse.sendRedirect("/menu/");
     }
 }

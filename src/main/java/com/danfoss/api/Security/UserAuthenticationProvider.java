@@ -27,9 +27,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         }
 
         if (existeEnBD(usuario)) {
-            if (loginBD(usuario, password)) {
-                return token(usuario, password, new TipoUsuario());
-            }
+            return loginBD(usuario, password);
         }
         return null;
     }
@@ -42,10 +40,11 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     private boolean existeEnBD(String nombreUsuario) throws BadCredentialsException {
         Usuario u = new Usuario();
 
-        try {
+        try
+        {
             u = Usuario.cargarPorNombre(nombreUsuario);
-
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         if (u.getId() > 0) {
@@ -56,12 +55,26 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         }
     }
 
-    private boolean loginBD(String nombreUsuario, String password) {
+    private UsernamePasswordAuthenticationToken loginBD(String nombreUsuario, String password) {
         Usuario usuarioApp = new Usuario();
         usuarioApp.setUsuario(nombreUsuario);
-        usuarioApp.setPasword(password);
+        usuarioApp.setPassword(password);
+        try
+        {
+            usuarioApp =  usuarioApp.login();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         if ( usuarioApp.getId() > 0 ) {
-            return true;
+            if (usuarioApp.getStatus() == 1) {
+                return token(nombreUsuario, password, usuarioApp.getTipoUsuario());
+            }
+            else {
+                throw new BadCredentialsException("Usuario Bloqueado");
+            }
         }
         else {
             throw new BadCredentialsException("usuario/contraseña incorrecta");
@@ -70,14 +83,13 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
     private List<GrantedAuthority> getAuthorities(TipoUsuario perfil) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(new SimpleGrantedAuthority(perfil.getDescripcion()));
-        authorities.add(new SimpleGrantedAuthority("Admin"));
+        authorities.add(new SimpleGrantedAuthority(perfil.getDescripcion()));
         return authorities;
     }
 
-    private UsernamePasswordAuthenticationToken token(String noEmpleado, String password, TipoUsuario perfil) {
+    private UsernamePasswordAuthenticationToken token(String username, String password, TipoUsuario perfil) {
         return new UsernamePasswordAuthenticationToken(
-                noEmpleado, password, getAuthorities(perfil));
+                username, password, getAuthorities(perfil));
     }
 
 }

@@ -19,26 +19,20 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ExcelHelper {
-    public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    static String[] HEADERS = {"Codigo", "Precio", "Descripcion"};
+    private static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     static String SHEET = "ListadoPrecios";
 
     public static boolean hasExcelFormat(MultipartFile file) {
-
-        if (!TYPE.equals(file.getContentType())) {
-            return false;
-        }
-        return true;
+        return TYPE.equals(file.getContentType());
     }
 
     public static List<Producto> excelToProducts(InputStream is) {
         try {
             Workbook workbook = new XSSFWorkbook(is);
-
             Sheet sheet = workbook.getSheet(SHEET);
             Iterator<Row> rows = sheet.iterator();
 
-            List<Producto> productoList = new ArrayList<Producto>();
+            List<Producto> productoList = new ArrayList<>();
 
             int rowNumber = 0;
             while (rows.hasNext()) {
@@ -51,11 +45,10 @@ public class ExcelHelper {
                 }
                 Iterator<Cell> cellsInRow = currentRow.iterator();
 
-
-
                 int cellIdx = 0;
+                Producto producto = new Producto();
+
                 while (cellsInRow.hasNext()) {
-                    Producto producto = new Producto();
                     Cell currentCell = cellsInRow.next();
                     switch (cellIdx) {
                         case 0:
@@ -71,14 +64,14 @@ public class ExcelHelper {
                             break;
 
                         case 3:
-                            producto.setPrecio(Double.parseDouble(currentCell.getStringCellValue()));
+                            producto.setPrecio(Double.parseDouble(String.valueOf(currentCell.getNumericCellValue())));
                             break;
                         default:
                             break;
                     }
                     cellIdx++;
-                    productoList.add(producto);
                 }
+                productoList.add(producto);
             }
             workbook.close();
             return productoList;

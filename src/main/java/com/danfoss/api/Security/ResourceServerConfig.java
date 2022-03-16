@@ -11,7 +11,13 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/usuario/").authenticated();
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/producto/").authenticated()
+                .antMatchers("/usuario/").authenticated()
+                .antMatchers("/modelo/").authenticated()
+                .antMatchers("/excel/").authenticated()
+                .anyRequest().authenticated()
+                .and().cors().disable();
     }
 }

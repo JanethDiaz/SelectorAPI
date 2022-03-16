@@ -3,6 +3,7 @@ package com.danfoss.api.Models.Productos;
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,12 +46,12 @@ public class Modelo {
         this.setDescripcion(desc);
     }
 
-    public  Modelo cargarPorDescripcion(String modelo) throws Exception {
+    public  Modelo cargarPorDescripcion(String modelo)  {
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", modelo);
 
-            DataTable dt = new Persistencia().Query("CALL SP_Modelos_CargarModeloPorDescripcion");
+            DataTable dt = new Persistencia().Query("CALL SP_Modelos_CargarModeloPorDescripcion", params);
 
             if (dt.Rows.size() > 0) {
                 return loadModelo(dt.Rows.get(0)) ;
@@ -58,13 +59,49 @@ public class Modelo {
 
         }
         catch (Exception e) {
+                e.printStackTrace();
+        }
+        return new Modelo();
+    }
+
+    public Modelo cargarPorId() throws Exception {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Modelos_CargarPorId", params);
+
+            if (dt.Rows.size() > 0) {
+                return loadModelo(dt.Rows.get(0)) ;
+            }
+        }
+        catch (Exception e) {
                 throw new Exception("error no se logro cargar" + e.getMessage());
         }
         return new Modelo();
     }
-    public  Modelo Insertar() throws Exception {
-        Modelo result = new Modelo();
+
+
+    public ArrayList<Modelo> listar() throws Exception {
+        ArrayList<Modelo> result = new ArrayList<>();
         try {
+            DataTable dt = new Persistencia().Query("CALL SP_Modelos_Listar");
+
+            if (dt.Rows.size() > 0) {
+                for (Map<String,String> row: dt.Rows) {
+                    result.add(loadModelo(row));
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new Exception("error " + e.getMessage());
+        }
+        return result;
+    }
+    public  Modelo Insertar() {
+        Modelo result = new Modelo();
+        try
+        {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getDescripcion());
 
@@ -72,15 +109,18 @@ public class Modelo {
             if (dt.Rows.size() > 0) {
                 result = loadModelo(dt.Rows.get(0));
             }
-        } catch (Exception e) {
-            throw new Exception("Error no se logro insertar" + e.getMessage());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
         return result;
     }
     private Modelo loadModelo(Map<String, String> row) {
         Modelo m = new Modelo();
         m.setId(Integer.parseInt(row.get("Id")));
-        m.setDescripcion(row.get("Descripcion"));
+
+        if (row.get("DescripcionModelo") != null )
+            m.setDescripcion(row.get("DescripcionModelo"));
 
         return m;
     }

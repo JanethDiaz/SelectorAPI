@@ -25,6 +25,6 @@ public class UsuarioService implements UserDetailsService {
         }
         List<GrantedAuthority> authorityList = new ArrayList<>();
         authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
-        return new User(usuario.getUsuario(), usuario.getPasword(), usuario.getStatus() == 1, true, true, true, authorityList);
+        return new User(usuario.getUsuario(), usuario.getPassword(), usuario.getStatus() == 1, true, true, true, authorityList);
     }
 }

@@ -1,5 +1,6 @@
 package com.danfoss.api.Controllers;
 
+import com.danfoss.api.Models.Usuarios.Cliente;
 import com.danfoss.api.Models.Usuarios.Usuario;
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,8 @@ public class UsuarioController {
     public ResponseEntity<?>  Insertar(@RequestBody Usuario usuario){
         try
         {
-            return new ResponseEntity<>(new Gson().toJson(usuario.Insertar()), HttpStatus.OK);
+            usuario.Insertar();
+            return new ResponseEntity<>(new Gson().toJson("Usuario guardado con éxito"), HttpStatus.OK);
         }
         catch (Exception e)
         {
@@ -52,6 +54,19 @@ public class UsuarioController {
         {
             Usuario u = new Usuario();
             return new ResponseEntity<>(new Gson().toJson(u.Listar()), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar usuario" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/listarPorCliente",  method = RequestMethod.POST)
+    public ResponseEntity<?>  ListarPorCliente(@RequestBody Cliente cliente){
+        try
+        {
+            Usuario u = new Usuario();
+            return new ResponseEntity<>(new Gson().toJson(u.ListarPorCliente(cliente.getId())), HttpStatus.OK);
         }
         catch (Exception e)
         {
