@@ -16,44 +16,55 @@ public class HistorialPrecioProducto {
     public int getId() {
         return Id;
     }
+
     public void setId(int id) {
         Id = id;
     }
+
     public double getPrecio() {
         return Precio;
     }
+
     public void setPrecio(double precio) {
         Precio = precio;
     }
+
     public int getIdUsuarioRegistro() {
         return IdUsuarioRegistro;
     }
+
     public void setIdUsuarioRegistro(int idUsuarioRegistro) {
         IdUsuarioRegistro = idUsuarioRegistro;
     }
+
     public byte getActivo() {
         return Activo;
     }
+
     public int getIdProducto() {
         return IdProducto;
     }
+
     public void setIdProducto(int idProducto) {
         IdProducto = idProducto;
     }
+
     public void setActivo(byte activo) {
         Activo = activo;
     }
+
     public HistorialPrecioProducto () {}
+
     public HistorialPrecioProducto (int idProducto) {
         this.setIdProducto(idProducto);
     }
 
 
     public  HistorialPrecioProducto cargarPorId(int id) throws Exception {
-        try
-        {
+        try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", id);
+
             DataTable dt = new Persistencia().Query("CALL SP_HistorialPreciosProducto_CargarPorId", params);
 
             if (dt.Rows.size() > 0) {
@@ -62,9 +73,8 @@ public class HistorialPrecioProducto {
             else {
                 throw new Exception("Producto no encontrado favor de validar sus credenciales");
             }
-        }
-        catch (Exception e) {
-            throw new Exception("Error al buscar producto" + e.getMessage());
+        } catch (Exception e) {
+            throw new Exception("Error al cargar" + e.getMessage());
         }
     }
     public boolean Insertar() throws Exception {
@@ -77,7 +87,7 @@ public class HistorialPrecioProducto {
             new Persistencia().ExceuteNonQuery("CALL SP_HistorialPreciosProducto_Insertar", params);
             return  true;
         } catch (Exception e) {
-            throw new Exception("Error " + e.getMessage());
+            throw new Exception("Error no se logro insertar" + e.getMessage());
         }
     }
     boolean DesactivarPorIdProducto() throws  Exception {

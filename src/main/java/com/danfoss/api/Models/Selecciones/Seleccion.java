@@ -85,7 +85,7 @@ public class Seleccion {
             DataTable dt = new Persistencia().Query("CALL SP_Seleccion_Insertar", params);
             return  true;
         } catch (Exception e) {
-            throw new Exception("Error" + e.getMessage());
+            throw new Exception("Error no se longro insertar" + e.getMessage());
         }
     }
     public  boolean Actualizar() throws Exception {
@@ -103,7 +103,7 @@ public class Seleccion {
             return true;
 
         } catch (Exception e) {
-            throw new Exception("Error no se logro la modificacion" + e.getMessage());
+            throw new Exception("Error no se logro actualizar" + e.getMessage());
         }
     }
 
@@ -115,7 +115,7 @@ public class Seleccion {
             DataTable dt = new Persistencia().Query("CALL SP_Seleccion_Eliminar", params);
             return true;
         } catch (Exception e) {
-            throw new Exception("Error no se logro la eliminacion" + e.getMessage());
+            throw new Exception("Error no se logro eliminar" + e.getMessage());
         }
     }
     public ArrayList<Seleccion> Listar() throws Exception {
@@ -129,7 +129,7 @@ public class Seleccion {
             }
             return result;
         } catch (Exception e) {
-            throw new Exception("Error no se logro listar correctamente" + e.getMessage());
+            throw new Exception("Error no se logro listar" + e.getMessage());
         }
     }
 

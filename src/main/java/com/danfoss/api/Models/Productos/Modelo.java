@@ -76,7 +76,7 @@ public class Modelo {
             }
         }
         catch (Exception e) {
-            throw new Exception("error " + e.getMessage());
+                throw new Exception("error no se logro cargar" + e.getMessage());
         }
         return new Modelo();
     }
