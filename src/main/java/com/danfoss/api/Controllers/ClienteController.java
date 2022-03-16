@@ -53,7 +53,7 @@ public class ClienteController {
 
     //EL CONTROLADOR Y EL METODO DE CLIENTE ELIMINAR YA ESTABAN CERADOS EXCEPTO EN LA BASE DE DATOS
     //YO CREO UNO DE LOS DOS PUDO HABER ELIMINADO EL SP EN LA BASE DE DATOS.
-
+    //OK
     @RequestMapping(value = "/eliminar",  method = RequestMethod.POST)
     public ResponseEntity<?> eliminar(@RequestBody Cliente cliente){
         try
