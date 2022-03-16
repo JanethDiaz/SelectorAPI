@@ -15,6 +15,15 @@ public class Seleccion {
     private int idTemperatura;
     private int urlCoolSelector;
     private byte activo;
+    private byte status;
+
+    public byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(byte status) {
+        status = status;
+    }
 
     public int getId() {
         return id;
@@ -144,6 +153,7 @@ public class Seleccion {
         s.setUrlCoolSelector(Integer.parseInt(row.get("UrlCoolSelector")));
         //if (row.get("Activo") != null)
         s.setActivo(Byte.parseByte(row.get("Activo")));
+        s.setStatus(Byte.parseByte(row.get("Status")));
 
         return s;
     }
