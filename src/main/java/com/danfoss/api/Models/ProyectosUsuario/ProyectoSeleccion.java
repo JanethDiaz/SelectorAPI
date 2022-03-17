@@ -69,6 +69,24 @@ public class ProyectoSeleccion {
         }
     }
 
+    public  boolean Actualizar() throws Exception {
+        try {
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+            params.put("2", getIdUsuario());
+            params.put("3", getIdSeleccion());
+            params.put("4", getIdProyecto());
+
+            new Persistencia().ExceuteNonQuery("CALL SP_ProyectoSeleccion_Actualizar", params);
+            return true;
+
+        } catch (Exception e) {
+            throw new Exception("Error no se logro Actualizar" + e.getMessage());
+        }
+    }
+
+
     public ArrayList<ProyectoSeleccion> Listar() throws Exception {
         try {
             ArrayList<ProyectoSeleccion> result = new ArrayList<>();
