@@ -13,7 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>api</name>
-    <description>API para el manejo y control de la aplicacion SelectorApp</description>
+    <description>API para el manejoS y control de la aplicacion SelectorApp</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>

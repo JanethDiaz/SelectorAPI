@@ -9,20 +9,20 @@ import java.util.*;
 public class DataAccess {
     private Connection conection;
 
-//    private static final String url      = "jdbc:mysql://localhost/SelectorAppDB?serverTimezone=UTC";
+//    private static final String url      = "jdbc:mysql://localhost/SelectorAppDB_Dev?serverTimezone=UTC";
+    private static final String url      = "jdbc:mysql://204.2.194.52/SelectorAppDB_Dev?serverTimezone=UTC";
     private static final String user     = "root";
-    private static final String url      = "jdbc:mysql://localhost/SelectorAppDB_latest?serverTimezone=UTC";
-//    private static final String password = "qRlkP-BrinvI_WCidT";
-    private static final String password = "";
+    private static final String password = "UeV8zPxBi#";
+//    private static final String password = "";
 
-    private DataAccess()throws ClassNotFoundException, SQLException
+    private DataAccess() throws ClassNotFoundException, SQLException
     {
         this.conection = this.getConnection();
     }
 
     static DataAccess GetInstancia(String KeyConn) throws Exception
     {
-        HttpServletRequest request = HttpHelper.getHttpServletReuest();
+        HttpServletRequest request = HttpHelper.getHttpServletRequest();
 
         assert request != null;
         if( request.getAttribute( KeyConn ) == null )
@@ -44,29 +44,6 @@ public class DataAccess {
         }
     }
 
-    //    synchronized int Scalar( String sql, HashMap<String, Object> params ) throws SQLException, ClassNotFoundException
-//    {
-//        int ret = 0;
-//        try
-//        {
-//
-//            CallableStatement command = preparedQuery(sql, params);
-//            int affected = command.executeUpdate();
-//
-//            if (affected > 0)
-//            {
-//                ResultSet rs = command.getGeneratedKeys();
-//                rs.next();
-//                ret = rs.getInt(1);
-//            }
-//        }
-//        finally
-//        {
-//            this.closeConnection();
-//        }
-//
-//        return ret;
-//    }
 
     int ExecuteNonQuery (String sql, HashMap<String, Object> params) throws  SQLException
     {

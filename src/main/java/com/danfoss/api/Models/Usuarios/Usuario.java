@@ -44,6 +44,7 @@ public class Usuario {
     public int getIdTipoUsuuario() {
         return IdTipoUsuuario;
     }
+
     public void setIdTipoUsuuario(int idTipoUsuuario) {
         IdTipoUsuuario = idTipoUsuuario;
     }

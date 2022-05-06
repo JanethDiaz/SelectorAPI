@@ -13,10 +13,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/producto/").authenticated()
-                .antMatchers("/usuario/").authenticated()
-                .antMatchers("/modelo/").authenticated()
-                .antMatchers("/excel/").authenticated()
                 .anyRequest().authenticated()
                 .and().cors().disable();
     }

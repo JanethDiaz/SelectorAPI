@@ -7,29 +7,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/ProyectosUsuario")
+@RestController
+@RequestMapping("/proyectosUsuario")
 public class ProyectosUsuarioController {
 
     @RequestMapping(value = "/insertar",  method = RequestMethod.POST)
-    public ResponseEntity<?> Insertar(@RequestBody ProyectosUsuario proyectosUsuario){
+    public ResponseEntity<?> Insertar(@RequestBody ProyectosUsuario proyectosUsuario) {
         try
         {
             proyectosUsuario.Insertar();
 
-            return new ResponseEntity<>(new Gson().toJson("insertado con éxito"), HttpStatus.OK);
+            return new ResponseEntity<>(new Gson().toJson("Proyecto guardado con éxito"), HttpStatus.OK);
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de insertar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de guardar el proyecto " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @RequestMapping(value = "/listar",  method = RequestMethod.GET)
-    public ResponseEntity<?> Listar(){
+    @RequestMapping(value = "/listar",  method = RequestMethod.POST)
+    public ResponseEntity<?> Listar(@RequestBody ProyectosUsuario c){
         try
         {
-            ProyectosUsuario c = new ProyectosUsuario();
             return new ResponseEntity<>(new Gson().toJson(c.Listar()), HttpStatus.OK);
         }
         catch (Exception e)
@@ -42,7 +43,8 @@ public class ProyectosUsuarioController {
     public ResponseEntity<?> Actualizar(@RequestBody ProyectosUsuario proyectosUsuario){
         try
         {
-            return new ResponseEntity<>(new Gson().toJson(proyectosUsuario.Actualizar()), HttpStatus.OK);
+            proyectosUsuario.Actualizar();
+            return new ResponseEntity<>(new Gson().toJson("Proyecto actualizado con éxito"), HttpStatus.OK);
         }
         catch (Exception e)
         {

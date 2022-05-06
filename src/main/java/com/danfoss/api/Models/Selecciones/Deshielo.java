@@ -38,27 +38,21 @@ public class Deshielo {
     public void setIdPadre(int idPadre) {
         this.idPadre = idPadre;
     }
-
     public int getEtiqueta() {
         return etiqueta;
     }
-
     public void setEtiqueta(int etiqueta) {
         this.etiqueta = etiqueta;
     }
-
     public byte getStatus() {
         return status;
     }
-
     public void setStatus(byte status) {
         this.status = status;
     }
-
     public byte getActivo() {
         return activo;
     }
-
     public void setActivo(byte activo) {
         this.activo = activo;
     }
@@ -77,6 +71,7 @@ public class Deshielo {
             throw new Exception("Error no se logro insertar" + e.getMessage());
         }
     }
+
     public  boolean Actualizar() throws Exception {
         try {
 
@@ -121,18 +116,117 @@ public class Deshielo {
         }
     }
 
+    public Deshielo CargarPorDescripcion() {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getDescripcionDeshielo());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Deshielo_CargarPorDescripcion", params);
+            if (dt.Rows.size() > 0) {
+                return loadDeshielo(dt.Rows.get(0));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Deshielo();
+    }
+
+    public Deshielo CargarPorIdPadreDescripcion() {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getIdPadre());
+            params.put("2", getDescripcionDeshielo());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Deshielo_CargarPorIdPadreDescripcion", params);
+            if (dt.Rows.size() > 0) {
+                return loadDeshielo(dt.Rows.get(0));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Deshielo();
+    }
+
+    public Deshielo CargarPorId() {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getIdPadre());
+
+            DataTable dt = new Persistencia().Query("CALL SP_Deshielo_CargarPorId", params);
+            if (dt.Rows.size() > 0) {
+                return loadDeshielo(dt.Rows.get(0));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Deshielo();
+    }
+
+    public Deshielo CargarPorId(int id) {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", id);
+
+            DataTable dt = new Persistencia().Query("CALL SP_Deshielo_CargarPorId", params);
+            if (dt.Rows.size() > 0) {
+                return loadDeshielo(dt.Rows.get(0));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Deshielo();
+    }
+
+    public ArrayList<Deshielo> ListarPorTemperatura( int idTemperatura) throws Exception {
+        try {
+            ArrayList<Deshielo> result = new ArrayList<>();
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", idTemperatura);
+            DataTable dt = new Persistencia().Query("CALL SP_TemperaturaDeshielo_Listar", params);
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadDeshielo(row));
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro listar las temperaturas por capacidad " + e.getMessage());
+        }
+    }
+
+    public ArrayList<Deshielo> ListarPorIdPadre() throws Exception {
+        try {
+            ArrayList<Deshielo> result = new ArrayList<>();
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+            DataTable dt = new Persistencia().Query("CALL SP_Deshielo_ListarPorIdPadre", params);
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadDeshielo(row));
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro listar el deshielo por idPadre " + e.getMessage());
+        }
+    }
+
     private  Deshielo loadDeshielo(Map<String, String> row) {
 
         Deshielo d= new Deshielo();
         d.setId(Integer.parseInt(row.get("Id")));
         d.setDescripcionDeshielo(row.get("DescripcionDeshielo"));
-        d.setIdPadre(Integer.parseInt(row.get("IdPadre")));
-        d.setEtiqueta(Integer.parseInt(row.get("Etiqueta")));
-        //if (row.get("Status") != null)
-        d.setStatus(Byte.parseByte(row.get("Status")));
-        //if (row.get("Activo") != null)
-        d.setActivo(Byte.parseByte(row.get("Activo")));
-
+        if (row.get("IdPadre") != null) {
+            d.setIdPadre(Integer.parseInt(row.get("IdPadre")));
+        }
         return d;
     }
 }

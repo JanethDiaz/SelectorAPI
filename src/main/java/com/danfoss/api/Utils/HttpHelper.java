@@ -12,7 +12,7 @@ public class HttpHelper {
     /**
      * Obtener el contexto http
      * */
-    public static HttpServletRequest getHttpServletReuest() {
+    public static HttpServletRequest getHttpServletRequest() {
 
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
         if (attributes != null) {

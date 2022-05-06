@@ -1,6 +1,7 @@
 package com.danfoss.api.Controllers;
 
 import com.danfoss.api.Models.ProyectosUsuario.ProyectoSeleccion;
+import com.danfoss.api.Models.ProyectosUsuario.ProyectoSeleccionA;
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ProyectoSeleccionController {
 
     @RequestMapping(value = "/insertar",  method = RequestMethod.POST)
-    public ResponseEntity<?>  Insertar(@RequestBody ProyectoSeleccion proyectoSeleccion){
+    public ResponseEntity<?>  Insertar(@RequestBody ProyectoSeleccionA proyectoSeleccion){
         try
         {
             proyectoSeleccion.Insertar();
@@ -25,21 +26,21 @@ public class ProyectoSeleccionController {
         }
     }
 
-    @RequestMapping(value = "/listar",  method = RequestMethod.GET)
-    public ResponseEntity<?> Listar(){
-        try
-        {
-            ProyectoSeleccion c = new ProyectoSeleccion();
-            return new ResponseEntity<>(new Gson().toJson(c.Listar()), HttpStatus.OK);
-        }
-        catch (Exception e)
-        {
-            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @RequestMapping(value = "/listar",  method = RequestMethod.GET)
+//    public ResponseEntity<?> Listar(){
+//        try
+//        {
+//            ProyectoSeleccion c = new ProyectoSeleccion();
+//            return new ResponseEntity<>(new Gson().toJson(c.Listar()), HttpStatus.OK);
+//        }
+//        catch (Exception e)
+//        {
+//            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     @RequestMapping(value = "/actualizar",  method = RequestMethod.POST)
-    public ResponseEntity<?> Actualizar(@RequestBody ProyectoSeleccion proyectoSeleccion){
+    public ResponseEntity<?> Actualizar(@RequestBody ProyectoSeleccionA proyectoSeleccion){
         try
         {
             return new ResponseEntity<>(new Gson().toJson(proyectoSeleccion.Actualizar()), HttpStatus.OK);
@@ -51,7 +52,7 @@ public class ProyectoSeleccionController {
     }
 
     @RequestMapping(value = "/eliminar",  method = RequestMethod.POST)
-    public ResponseEntity<?> eliminar(@RequestBody ProyectoSeleccion proyectoSeleccion){
+    public ResponseEntity<?> eliminar(@RequestBody ProyectoSeleccionA proyectoSeleccion){
         try
         {
             proyectoSeleccion.Eliminar();

@@ -50,7 +50,6 @@ public class Modelo {
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", modelo);
-
             DataTable dt = new Persistencia().Query("CALL SP_Modelos_CargarModeloPorDescripcion", params);
 
             if (dt.Rows.size() > 0) {

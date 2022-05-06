@@ -1,5 +1,6 @@
 package com.danfoss.api.Models.Productos;
 
+import com.danfoss.api.DAO.UploadProductosDAO;
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
 import com.danfoss.api.ExcelHelper.ExcelHelper;
@@ -70,19 +71,15 @@ public class Producto {
     public void setActivo(byte activo) {
         Activo = activo;
     }
-
     public String getDescModelo() {
         return DescModelo;
     }
-
     public void setDescModelo(String descModelo) {
         DescModelo = descModelo;
     }
-
     public String getUrlProductStore() {
         return UrlProductStore;
     }
-
     public void setUrlProductStore(String urlProductStore) {
         UrlProductStore = urlProductStore;
     }
@@ -150,33 +147,25 @@ public class Producto {
 
         }
         catch (Exception e) {
-            //throw new Exception( "Error al insertar producto " + e );
             e.printStackTrace();
         }
 
         return 0;
     }
-
-
-    public  void ActualizarListaPrecios(MultipartFile file) throws RuntimeException {
-
+    public  void ActualizarListaPrecios(UploadProductosDAO uploadProductosDAO) throws RuntimeException {
         try
         {
+            MultipartFile file = uploadProductosDAO.getFile();
             List<Producto> productos = ExcelHelper.excelToProducts(file.getInputStream());
             for (Producto p : productos) {
-                p.setIdUsuarioRegistro(1);
+                p.setIdUsuarioRegistro(uploadProductosDAO.getIdUsuario());
                 if (!p.getCodigo().equals("")) {
                     Modelo m = new Modelo();
                     m = m.cargarPorDescripcion(p.getModelo().getDescripcion());
                     if (m.getId() > 0) {
                         p.setModelo(m);
                     } else {
-//                        Modelo model = p.getModelo().Insertar();
-//                        if (model.getId() > 0 ) {
-//                            p.setModelo( model);
-//                        }
                         p.setModelo(p.getModelo().Insertar());
-
                     }
                     Producto producto = cargarPorCodigo(p.getCodigo());
                     if (producto.getId() > 0) {
@@ -187,7 +176,7 @@ public class Producto {
                         hpp.setIdProducto(producto.getId());
                         hpp.DesactivarPorIdProducto();
                         hpp.setPrecio(p.getPrecio());
-                        hpp.setIdUsuarioRegistro(1);
+                        hpp.setIdUsuarioRegistro(uploadProductosDAO.getIdUsuario());
                         hpp.Insertar();
                     }
                     else {
@@ -209,7 +198,7 @@ public class Producto {
             throw new RuntimeException("fail to store excel data: " + e.getMessage());
         }
     }
-    public  Producto cargarPorCodigo(String codigo) throws Exception {
+    public  Producto cargarPorCodigo(String codigo) {
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", codigo);
@@ -221,12 +210,11 @@ public class Producto {
             }
         }
         catch (Exception e) {
-            throw new Exception("Error al buscar producto " + codigo + " " + e.getMessage());
+            e.printStackTrace();
         }
 
         return new Producto();
     }
-
     public  boolean Eliminar() throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -238,7 +226,6 @@ public class Producto {
             throw new Exception("Error no se logro la eliminacion" + e.getMessage());
         }
     }
-
     public static boolean ValidarCodigo(String codigo) throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -249,7 +236,6 @@ public class Producto {
             throw new Exception("Error no se logro la eliminacion" + e.getMessage());
         }
     }
-
     public  ArrayList<Producto> Listar() throws Exception {
         try
         {

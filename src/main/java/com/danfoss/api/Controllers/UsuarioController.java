@@ -23,6 +23,7 @@ public class UsuarioController {
             return new ResponseEntity<>(new Gson().toJson("Error al tratar de insertar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @RequestMapping(value = "/actualizar",  method = RequestMethod.PUT)
     public ResponseEntity<?>  Actualizar(@RequestBody Usuario usuario){
         try
@@ -48,6 +49,7 @@ public class UsuarioController {
             return new ResponseEntity<>(new Gson().toJson("Error al tratar de Eliminar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @RequestMapping(value = "/listar",  method = RequestMethod.GET)
     public ResponseEntity<?>  Listar(){
         try
@@ -74,5 +76,30 @@ public class UsuarioController {
         }
     }
 
+    @RequestMapping(value = "/Desactivar",  method = RequestMethod.POST)
+    public ResponseEntity<?> Desactivar(@RequestBody Usuario usuario){
+        try
+        {
+            usuario.Desactivar();
+            return new ResponseEntity<>(new Gson().toJson("El Usuario se desactivo con éxito"), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Desactivar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/Activar",  method = RequestMethod.POST)
+    public ResponseEntity<?> Activar(@RequestBody Usuario usuario){
+        try
+        {
+            usuario.Activar();
+            return new ResponseEntity<>(new Gson().toJson("El Usuario se activo con éxito"), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de activar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

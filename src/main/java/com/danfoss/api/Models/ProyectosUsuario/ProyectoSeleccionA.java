@@ -2,83 +2,40 @@ package com.danfoss.api.Models.ProyectosUsuario;
 
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
+import com.danfoss.api.Models.Plantillas.PlantillaBase;
+import com.danfoss.api.Models.Selecciones.PlantillaSeleccion;
 import com.danfoss.api.Models.Selecciones.Seleccion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProyectoSeleccion {
-    private int id;
-    private int idUsuario;
-    private int idSeleccion;
-    private int idProyecto;
-    private byte Activo;
-    private int cantidad;
-    private String areaSeleccion;
-    private String descripcionPlantilla;
-    private Seleccion seleccion;
 
-    public String getDescripcionPlantilla() {
-        return descripcionPlantilla;
-    }
-    public void setDescripcionPlantilla(String descripcionPlantilla) {
-        this.descripcionPlantilla = descripcionPlantilla;
-    }
-    public Seleccion getSeleccion() {
-        return seleccion;
-    }
-    public void setSeleccion(Seleccion seleccion) {
-        this.seleccion = seleccion;
-    }
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
+public class ProyectoSeleccionA extends PlantillaBase {
+    private int idUsuario;
     public int getIdUsuario() {
         return idUsuario;
     }
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }
-    public int getIdSeleccion() {
-        return idSeleccion;
-    }
-    public void setIdSeleccion(int idSeleccion) {
-        this.idSeleccion = idSeleccion;
-    }
-    public int getIdProyecto() {
-        return idProyecto;
-    }
-    public void setIdProyecto(int idProyecto) {
-        this.idProyecto = idProyecto;
-    }
-    public byte getActivo() {
-        return Activo;
-    }
-    public void setActivo(byte activo) {
-        Activo = activo;
+
+    public ProyectoSeleccionA() {
+
     }
 
-    public int getCantidad() {
-        return cantidad;
+    ProyectoSeleccionA(PlantillaSeleccion p) {
+        setIdProyecto(p.getIdProyecto());
+        setIdSeleccion(p.getIdSeleccion());
+        if (p.getSeleccion() != null) {
+            setSeleccion(p.getSeleccion());
+        }
+        setCantidad(p.getCantidad());
+        setAreaSeleccion(p.getAreaSeleccion());
+        setId(p.getId());
     }
 
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    public String getAreaSeleccion() {
-        return areaSeleccion;
-    }
-    public void setAreaSeleccion(String areaSeleccion) {
-        this.areaSeleccion = areaSeleccion;
-    }
-
-
-    public void Insertar() throws Exception {
+    public  void Insertar() throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getIdUsuario());
@@ -113,24 +70,6 @@ public class ProyectoSeleccion {
         }
     }
 
-
-    public ArrayList<ProyectoSeleccion> Listar(int idProyecto) throws Exception {
-        try {
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("1", idProyecto);
-            ArrayList<ProyectoSeleccion> result = new ArrayList<>();
-
-            DataTable dt = new Persistencia().Query("CALL SP_ProyectoSeleccion_ListarPorIdProyecto", params);
-            if (dt.Rows.size() > 0) {
-                for ( Map<String, String> row: dt.Rows ) {
-                    result.add(loadProyectoSeleccion(row));
-                }
-            }
-            return result;
-        } catch (Exception e) {
-            throw new Exception("Error no se logro listar" + e.getMessage());
-        }
-    }
     public  boolean Eliminar() throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -143,7 +82,24 @@ public class ProyectoSeleccion {
         }
     }
 
-    public boolean existe() {
+    public ArrayList<ProyectoSeleccionA> Listar(int idProyecto) throws Exception {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", idProyecto);
+            ArrayList<ProyectoSeleccionA> result = new ArrayList<>();
+
+            DataTable dt = new Persistencia().Query("CALL SP_ProyectoSeleccion_ListarPorIdProyecto", params);
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadProyectoSeleccion(row));
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro listar" + e.getMessage());
+        }
+    }
+    boolean Existe() {
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getIdProyecto());
@@ -161,20 +117,24 @@ public class ProyectoSeleccion {
         return false;
     }
 
-    private  ProyectoSeleccion loadProyectoSeleccion(Map<String, String> row) {
+    private  ProyectoSeleccionA loadProyectoSeleccion(Map<String, String> row) throws Exception {
 
-        ProyectoSeleccion ps = new ProyectoSeleccion();
+        ProyectoSeleccionA ps = new ProyectoSeleccionA();
         ps.setId(Integer.parseInt(row.get("Id")));
         ps.setIdSeleccion(Integer.parseInt(row.get("IdSeleccion")));
         ps.setIdProyecto(Integer.parseInt(row.get("IdProyecto")));
         ps.setAreaSeleccion(row.get("AreaSeleccion"));
         ps.setDescripcionPlantilla(row.get("DescripcionPlantilla"));
-        if (row.get("Activo") != null)
-            ps.setActivo(Byte.parseByte(row.get("Activo")));
 
         if(row.get("CantidadSeleccion") != null)
             ps.setCantidad(Integer.parseInt(row.get("CantidadSeleccion")));
 
+        if ( getIdSeleccion() > 0 ) {
+            Seleccion seleccion = new Seleccion();
+            seleccion.setId(getIdSeleccion());
+            seleccion.CargarPorId();
+            ps.setSeleccion(seleccion);
+        }
 
         return ps;
     }

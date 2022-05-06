@@ -2,9 +2,13 @@ package com.danfoss.api.Models.Selecciones;
 
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class GrupoSeleccion {
@@ -45,7 +49,7 @@ public class GrupoSeleccion {
         this.activo = activo;
     }
 
-    public  boolean Insertar() throws Exception {
+    public  void Insertar()  {
 
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -53,9 +57,13 @@ public class GrupoSeleccion {
             params.put("2", getIdSeleccion());
 
             DataTable dt = new Persistencia().Query("CALL SP_GruposSeleccion_Insertar", params);
-            return  true;
+
+            if (dt.Rows.size() > 0) {
+                setId(Integer.parseInt(dt.Rows.get(0).get("Id")));
+            }
+
         } catch (Exception e) {
-            throw new Exception("Error no se logro insertar " + e.getMessage());
+            e.printStackTrace();
         }
     }
     public  boolean Actualizar() throws Exception {
@@ -106,9 +114,37 @@ public class GrupoSeleccion {
         gs.setId(Integer.parseInt(row.get("Id")));
         gs.setDescripcionSeleccion(row.get("DescripcionSeleccion"));
         gs.setIdSeleccion(Integer.parseInt(row.get("IdSeleccion")));
-        //if (row.get("Activo") != null)
         gs .setActivo(Byte.parseByte(row.get("Activo")));
 
         return gs;
     }
+
+    public void crearGrupo(Iterator<Cell> cellsInRow) throws IOException {
+        int cellIdx = 1;
+        try {
+            while (cellsInRow.hasNext()) {
+                Cell currentCell = cellsInRow.next();
+                if (cellIdx > 7 ) {
+                    break;
+                }
+                if (cellIdx == 7) {
+                    if (currentCell.getCellType() == CellType.STRING) {
+                        if (currentCell.getStringCellValue().isEmpty())
+                        {
+                            cellIdx++;
+                            continue;
+                        }
+                        setDescripcionSeleccion(currentCell.getStringCellValue());
+                        Insertar();
+                    }
+                }
+                cellIdx++;
+            }
+        }
+        catch (Exception e) {
+            throw new IOException("error al leer la celda en crearGrupo " + e.getMessage());
+        }
+
+    }
+
 }

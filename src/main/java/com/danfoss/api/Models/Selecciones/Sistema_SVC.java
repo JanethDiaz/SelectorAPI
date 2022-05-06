@@ -71,7 +71,6 @@ public class Sistema_SVC {
             throw new Exception("Error no se logro actualizar" + e.getMessage());
         }
     }
-
     public  boolean Eliminar() throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -83,7 +82,6 @@ public class Sistema_SVC {
             throw new Exception("Error no se logro eliminar" + e.getMessage());
         }
     }
-
     public ArrayList<Sistema_SVC> Listar() throws Exception {
         try {
             ArrayList<Sistema_SVC> result = new ArrayList<>();
@@ -98,17 +96,25 @@ public class Sistema_SVC {
             throw new Exception("Error no se logro listar" + e.getMessage());
         }
     }
+    public Sistema_SVC CargarPorDescripcion() {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getDescripcionSistema());
+            DataTable dt = new Persistencia().Query("CALL SP_SistemaSVC_CargarPorDescripcion", params);
+            if (dt.Rows.size() > 0) {
+                return loadSistema_SVC(dt.Rows.get(0));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Sistema_SVC();
+    }
 
     private  Sistema_SVC loadSistema_SVC(Map<String, String> row) {
-
         Sistema_SVC svc= new Sistema_SVC();
         svc.setId(Integer.parseInt(row.get("Id")));
-        svc.setDescripcionSistema(row.get("DescripcionCapacidad"));
-        //if (row.get("Status") != null)
-        svc.setStatus(Byte.parseByte(row.get("Status")));
-        //if (row.get("Activo") != null)
-        svc.setActivo(Byte.parseByte(row.get("Activo")));
-
+        svc.setDescripcionSistema(row.get("DescripcionSistema"));
         return svc;
     }
 }

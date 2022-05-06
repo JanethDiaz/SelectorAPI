@@ -100,16 +100,60 @@ public class Capacidad {
         }
     }
 
-    private  Capacidad loadCapacidad(Map<String, String> row) {
+    public ArrayList<Capacidad> ListarPorSistema(int idSistema) throws Exception {
+        try {
+            ArrayList<Capacidad> result = new ArrayList<>();
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", idSistema);
 
+            DataTable dt = new Persistencia().Query("CALL SP_CapacidadSistema_Listar", params);
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadCapacidad(row));
+                }
+            }
+            return result;
+        }
+        catch (Exception e) {
+            throw new Exception("Error no se logro listar" + e.getMessage());
+        }
+    }
+
+    public Capacidad CargarPorValor() {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getValor());
+            DataTable dt = new Persistencia().Query("CALL SP_Capacidad_CargarPorValor", params);
+            if (dt.Rows.size() > 0) {
+               return loadCapacidad(dt.Rows.get(0));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Capacidad();
+    }
+
+    public Capacidad CargarPorId(int id) {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", id);
+            DataTable dt = new Persistencia().Query("CALL SP_Capacidad_CargarPorId", params);
+            if (dt.Rows.size() > 0) {
+                return loadCapacidad(dt.Rows.get(0));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Capacidad();
+    }
+    private  Capacidad loadCapacidad(Map<String, String> row) {
         Capacidad c = new Capacidad();
         c.setId(Integer.parseInt(row.get("Id")));
         c.setValor(Integer.parseInt(row.get("Valor")));
-        //if (row.get("Status") != null)
-            c.setStatus(Byte.parseByte(row.get("Status")));
-        //if (row.get("Activo") != null)
-            c.setActivo(Byte.parseByte(row.get("Activo")));
-
         return c;
     }
 }
