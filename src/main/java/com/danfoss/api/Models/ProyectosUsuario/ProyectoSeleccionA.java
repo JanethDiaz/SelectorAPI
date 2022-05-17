@@ -5,6 +5,7 @@ import com.danfoss.api.DataAccess.Persistencia;
 import com.danfoss.api.Models.Plantillas.PlantillaBase;
 import com.danfoss.api.Models.Selecciones.PlantillaSeleccion;
 import com.danfoss.api.Models.Selecciones.Seleccion;
+import com.danfoss.api.Models.Selecciones.SeleccionGruposProductos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +14,25 @@ import java.util.Map;
 
 public class ProyectoSeleccionA extends PlantillaBase {
     private int idUsuario;
+    private ArrayList<SeleccionGruposProductos> productosSeleccion;
+    private double precioTotal;
     public int getIdUsuario() {
         return idUsuario;
     }
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
+    }
+    public ArrayList<SeleccionGruposProductos> getProductosSeleccion() {
+        return productosSeleccion;
+    }
+    public void setProductosSeleccion(ArrayList<SeleccionGruposProductos> productosSeleccion) {
+        this.productosSeleccion = productosSeleccion;
+    }
+    public double getPrecioTotal() {
+        return precioTotal;
+    }
+    public void setPrecioTotal(double precioTotal) {
+        this.precioTotal = precioTotal;
     }
 
     public ProyectoSeleccionA() {
@@ -29,6 +44,7 @@ public class ProyectoSeleccionA extends PlantillaBase {
         setIdSeleccion(p.getIdSeleccion());
         if (p.getSeleccion() != null) {
             setSeleccion(p.getSeleccion());
+            setIdSeleccion(p.getSeleccion().getId());
         }
         setCantidad(p.getCantidad());
         setAreaSeleccion(p.getAreaSeleccion());
@@ -75,7 +91,7 @@ public class ProyectoSeleccionA extends PlantillaBase {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getId());
 
-            DataTable dt = new Persistencia().Query("CALL SP_ProyectoSeleccion_Eliminar", params);
+            new Persistencia().ExceuteNonQuery("CALL SP_ProyectoSeleccion_Eliminar", params);
             return true;
         } catch (Exception e) {
             throw new Exception("Error no se logro eliminar" + e.getMessage());
@@ -115,6 +131,17 @@ public class ProyectoSeleccionA extends PlantillaBase {
         }
 
         return false;
+    }
+
+    void CargarProductosSeleccion(int idSeleccion) {
+        try
+        {
+            SeleccionGruposProductos seleccionGruposProductos = new SeleccionGruposProductos();
+            setProductosSeleccion(seleccionGruposProductos.ListarPorIdSeleccion(idSeleccion));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private  ProyectoSeleccionA loadProyectoSeleccion(Map<String, String> row) throws Exception {

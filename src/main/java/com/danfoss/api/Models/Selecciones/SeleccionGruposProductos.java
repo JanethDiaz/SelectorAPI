@@ -26,6 +26,8 @@ public class SeleccionGruposProductos {
     private String codigo;
     private String descripcionModelo;
     private String descripcionProdcto;
+    private String descripcionPlantilla;
+    private String areaSeleccion;
 
     public int getId() {
         return id;
@@ -141,6 +143,18 @@ public class SeleccionGruposProductos {
     public void setCantidadFija(int cantidadFija) {
         this.cantidadFija = cantidadFija;
     }
+    public String getDescripcionPlantilla() {
+        return descripcionPlantilla;
+    }
+    public void setDescripcionPlantilla(String descripcionPlantilla) {
+        this.descripcionPlantilla = descripcionPlantilla;
+    }
+    public String getAreaSeleccion() {
+        return areaSeleccion;
+    }
+    public void setAreaSeleccion(String areaSeleccion) {
+        this.areaSeleccion = areaSeleccion;
+    }
 
     public ArrayList<SeleccionGruposProductos> Listar() throws Exception {
         try {
@@ -156,10 +170,28 @@ public class SeleccionGruposProductos {
             throw new Exception("Error no se logro listar" + e.getMessage());
         }
     }
-    public ArrayList<SeleccionGruposProductos> ListarPorIdSeleccion(int IdSeleccion) throws Exception {
+    public ArrayList<SeleccionGruposProductos> ListarPorIdSeleccion(Seleccion seleccion) throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
-            params.put("1", IdSeleccion);
+            params.put("1", seleccion.getId());
+            ArrayList<SeleccionGruposProductos> result = new ArrayList<>();
+            DataTable dt = new Persistencia().Query("CALL SP_GrupoSeleccion_ListarPorIdSeleccion", params);
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadSeleccionGruposProducto(row, seleccion.getCantidad()));
+                }
+            }
+            return result;
+        }
+        catch (Exception e) {
+            throw new Exception("Error al listar los productos de la seleccion " + e.getMessage());
+        }
+    }
+
+    public ArrayList<SeleccionGruposProductos> ListarPorIdSeleccion(int idSeleccion) throws Exception {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", idSeleccion);
             ArrayList<SeleccionGruposProductos> result = new ArrayList<>();
             DataTable dt = new Persistencia().Query("CALL SP_GrupoSeleccion_ListarPorIdSeleccion", params);
             if (dt.Rows.size() > 0) {
@@ -216,6 +248,7 @@ public class SeleccionGruposProductos {
         }
 
     }
+
     private  SeleccionGruposProductos loadSeleccionGruposProducto(Map<String, String> row) {
         SeleccionGruposProductos sgp = new SeleccionGruposProductos();
         sgp.setId(Integer.parseInt(row.get("Id")));
@@ -242,5 +275,35 @@ public class SeleccionGruposProductos {
         }
         return sgp;
     }
+
+    private  SeleccionGruposProductos loadSeleccionGruposProducto(Map<String, String> row, int cantidad) {
+        SeleccionGruposProductos sgp = new SeleccionGruposProductos();
+        sgp.setId(Integer.parseInt(row.get("Id")));
+        if (row.get("DescripcionSeleccion") != null ) {
+            sgp.setDescripcionSeleccion(row.get("DescripcionSeleccion"));
+        }
+        if (row.get("Cantidad") != null ) {
+            sgp.setCantidad(Integer.parseInt(row.get("Cantidad")) * cantidad);
+            sgp.setCantidadFija(Integer.parseInt(row.get("Cantidad")));
+        }
+        if (row.get("Codigo") != null ) {
+            sgp.setCodigo(row.get("Codigo"));
+        }
+        if (row.get("DescripcionModelo") != null ) {
+            sgp.setDescripcionModelo(row.get("DescripcionModelo"));
+        }
+        if (row.get("Descripcion") != null ) {
+            sgp.setDescripcionProdcto(row.get("Descripcion"));
+        }
+        if (row.get("Precio") != null) {
+            sgp.setPrecio(Double.parseDouble(row.get("Precio")));
+            double total = sgp.getPrecio()  * sgp.getCantidad();
+            sgp.setPrecioTotal(total);
+        }
+        return sgp;
+    }
+
+
+
 }
 

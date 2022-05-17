@@ -1,5 +1,6 @@
 package com.danfoss.api.Controllers;
 
+import com.danfoss.api.DAO.ResponseProject;
 import com.danfoss.api.Models.ProyectosUsuario.ProyectosUsuario;
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,10 @@ public class ProyectosUsuarioController {
         try
         {
             proyectosUsuario.Insertar();
-
-            return new ResponseEntity<>(new Gson().toJson("Proyecto guardado con éxito"), HttpStatus.OK);
+            ResponseProject responseProject = new ResponseProject();
+            responseProject.setId(proyectosUsuario.getId());
+            responseProject.setMessage("Proyecto guardado con éxito");
+            return new ResponseEntity<>(new Gson().toJson(responseProject), HttpStatus.OK);
         }
         catch (Exception e)
         {
@@ -44,6 +47,9 @@ public class ProyectosUsuarioController {
         try
         {
             proyectosUsuario.Actualizar();
+            ResponseProject responseProject = new ResponseProject();
+            responseProject.setId(proyectosUsuario.getId());
+            responseProject.setMessage("Proyecto actualizado con éxito");
             return new ResponseEntity<>(new Gson().toJson("Proyecto actualizado con éxito"), HttpStatus.OK);
         }
         catch (Exception e)
@@ -57,7 +63,7 @@ public class ProyectosUsuarioController {
         try
         {
             proyectosUsuario.Eliminar();
-            return new ResponseEntity<>(new Gson().toJson("Se elimino con exito"), HttpStatus.OK);
+            return new ResponseEntity<>(new Gson().toJson("Proyecto eliminado con éxito"), HttpStatus.OK);
         }
         catch (Exception e)
         {

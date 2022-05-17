@@ -34,7 +34,7 @@ public class SeleccionesController {
         try
         {
             SeleccionGruposProductos seleccionGruposProductos = new SeleccionGruposProductos();
-            return new ResponseEntity<>(new Gson().toJson(seleccionGruposProductos.ListarPorIdSeleccion(seleccion.getId())), HttpStatus.OK);
+            return new ResponseEntity<>(new Gson().toJson(seleccionGruposProductos.ListarPorIdSeleccion(seleccion)), HttpStatus.OK);
         }
         catch (Exception e)
         {

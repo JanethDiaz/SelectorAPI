@@ -1,4 +1,4 @@
-package com.danfoss.api.Models.PreciosUsuarios;
+package com.danfoss.api.Models.Usuarios.PreciosUsuarios;
 
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
@@ -14,31 +14,24 @@ public class PrecioUsuario {
     public int getId() {
         return Id;
     }
-
     public void setId(int id) {
         Id = id;
     }
-
     public int getIdProducto() {
         return idProducto;
     }
-
     public void setIdProducto(int idProducto) {
         this.idProducto = idProducto;
     }
-
     public int getIdCliente() {
         return idCliente;
     }
-
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
     }
-
     public byte getActivo() {
         return Activo;
     }
-
     public void setActivo(byte activo) {
         Activo = activo;
     }

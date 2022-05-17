@@ -25,6 +25,7 @@ public class Seleccion {
     private byte status;
     private int idPlantillaSeleccion;
     private String areaSeleccion;
+    private int cantidad;
 
     //Encabezados de la tabla
     private int capacidadDesc;
@@ -153,6 +154,13 @@ public class Seleccion {
     public void setDeshielo3(String deshielo3) {
         this.deshielo3 = deshielo3;
     }
+    public int getCantidad() {
+        return cantidad;
+    }
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
     public void Insertar(int idPlantilla) throws Exception{
         try
         {

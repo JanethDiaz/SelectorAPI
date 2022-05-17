@@ -1,4 +1,4 @@
-package com.danfoss.api.Models.PreciosUsuarios;
+package com.danfoss.api.Models.Usuarios.PreciosUsuarios;
 
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
@@ -52,19 +52,21 @@ public class DescuentoUsuario {
         Activo = activo;
     }
 
-    public  int Insertar() throws Exception {
-
+    public  void Insertar() throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
-            params.put("1", getPorcentaje());
-            params.put("2", getIdCliente());
-            params.put("3", getIdProducto());
+            params.put("1", getIdCliente());
+            params.put("2", getIdProducto());
 
             DataTable dt = new Persistencia().Query("CALL SP_DescuentosUsuario_Insertar", params);
-
-        } catch (Exception e) {
-            throw new Exception("Error" + e.getMessage());
+            if ( dt.Rows.size() > 0 ) {
+                if (dt.Rows.get(0).get("Id") != null) {
+                    setId(Integer.parseInt(dt.Rows.get(0).get("Id")));
+                }
+            }
         }
-        return 0; // Checar return
+        catch (Exception e) {
+            throw new Exception("Error al tratar de insertar el descuento del cliente " + e.getMessage());
+        }
     }
 }

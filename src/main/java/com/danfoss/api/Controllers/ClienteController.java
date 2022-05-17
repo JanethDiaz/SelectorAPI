@@ -42,7 +42,7 @@ public class ClienteController {
         try
         {
             cliente.Insertar();
-            return new ResponseEntity<>(new Gson().toJson("Cliente insertado con exito"), HttpStatus.OK);
+            return new ResponseEntity<>(new Gson().toJson("Cliente guardado con éxito"), HttpStatus.OK);
         }
         catch (Exception e)
         {
@@ -79,7 +79,6 @@ public class ClienteController {
         }
     }
 
-
     @RequestMapping(value = "/Activar",  method = RequestMethod.POST)
     public ResponseEntity<?> Activar(@RequestBody Cliente cliente){
         try
@@ -98,7 +97,8 @@ public class ClienteController {
     public ResponseEntity<?> Actualizar(@RequestBody Cliente cliente){
         try
         {
-            return new ResponseEntity<>(new Gson().toJson(cliente.Actualizar()), HttpStatus.OK);
+            cliente.Actualizar();
+            return new ResponseEntity<>(new Gson().toJson("Cliente actualizado con éxito"), HttpStatus.OK);
         }
         catch (Exception e)
         {

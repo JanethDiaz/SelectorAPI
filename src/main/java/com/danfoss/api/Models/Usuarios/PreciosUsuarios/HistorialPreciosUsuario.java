@@ -1,4 +1,4 @@
-package com.danfoss.api.Models.PreciosUsuarios;
+package com.danfoss.api.Models.Usuarios.PreciosUsuarios;
 
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;

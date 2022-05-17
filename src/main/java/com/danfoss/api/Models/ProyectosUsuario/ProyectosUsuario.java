@@ -3,6 +3,8 @@ package com.danfoss.api.Models.ProyectosUsuario;
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
 import com.danfoss.api.Models.Selecciones.PlantillaSeleccion;
+import com.danfoss.api.Models.Selecciones.Seleccion;
+import com.danfoss.api.Models.Selecciones.SeleccionGruposProductos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +16,13 @@ public class ProyectosUsuario {
     private String nombreProyecto;
     private int idUsuario;
     private List<PlantillaSeleccion> plantillas;
+    private ArrayList<ProyectoSeleccionA> selecciones;
+    private ArrayList<SeleccionGruposProductos> productosSeleccion = new ArrayList<>();
     private String fechaProyecto;
     private double costoTotal;
+    private byte esDescuento;
+    private double descuento;
+    private int cantidadSelecciones;
     private byte activo;
 
     public int getId() {
@@ -60,7 +67,36 @@ public class ProyectosUsuario {
     public void setCostoTotal(double costoTotal) {
         this.costoTotal = costoTotal;
     }
-
+    public int getCantidadSelecciones() {
+        return cantidadSelecciones;
+    }
+    public void setCantidadSelecciones(int cantidadSelecciones) {
+        this.cantidadSelecciones = cantidadSelecciones;
+    }
+    public ArrayList<ProyectoSeleccionA> getSelecciones() {
+        return selecciones;
+    }
+    public void setSelecciones(ArrayList<ProyectoSeleccionA> selecciones) {
+        this.selecciones = selecciones;
+    }
+    public ArrayList<SeleccionGruposProductos> getProductosSeleccion() {
+        return productosSeleccion;
+    }
+    public void setProductosSeleccion(ArrayList<SeleccionGruposProductos> productosSeleccion) {
+        this.productosSeleccion = productosSeleccion;
+    }
+    public byte getEsDescuento() {
+        return esDescuento;
+    }
+    public void setEsDescuento(byte esDescuento) {
+        this.esDescuento = esDescuento;
+    }
+    public double getDescuento() {
+        return descuento;
+    }
+    public void setDescuento(double descuento) {
+        this.descuento = descuento;
+    }
 
     public void Insertar() throws Exception {
         try {
@@ -72,9 +108,9 @@ public class ProyectosUsuario {
 
             if ( dt.Rows.size() > 0 ) {
                 setId(Integer.parseInt(dt.Rows.get(0).get("Id")));
-                if (getId() > 0) {
-                    insertarSelecciones();
-                }
+//                if (getId() > 0) {
+//                    insertarSelecciones();
+//                }
             }
         }
         catch (Exception e) {
@@ -90,8 +126,7 @@ public class ProyectosUsuario {
             params.put("2", getNombreProyecto());
 
             new Persistencia().ExceuteNonQuery("CALL SP_ProyectosUsario_ActualizarNombre", params);
-            insertarSelecciones();
-
+            //insertarSelecciones();
             return true;
 
         } catch (Exception e) {
@@ -99,36 +134,6 @@ public class ProyectosUsuario {
         }
     }
 
-//    private void insertarSelecciones() throws Exception {
-//        try
-//        {
-//            if (getPlantillas().size() > 0) {
-//                for (PlantillaSeleccion p:
-//                        getPlantillas()) {
-//                    ProyectoSeleccion ps = new ProyectoSeleccion();
-//                    ps.setIdProyecto(p.getIdProyecto());
-//                    ps.setIdSeleccion(p.getIdSeleccion());
-//                    ps.setIdUsuario(getIdUsuario());
-//                    if ( p.getSeleccion() != null ) {
-//                        ps.setIdSeleccion(p.getSeleccion().getId());
-//                    }
-//                    ps.setCantidad(p.getCantidad());
-//                    ps.setAreaSeleccion(p.getAreaSeleccion());
-//                    ps.setIdProyecto(getId());
-//                    if ( !ps.existe() && p.getSeleccion() != null ) {
-//                        ps.Insertar();
-//                    }
-//                    else {
-//                        ps.setId(p.getId());
-//                        ps.Actualizar();
-//                    }
-//                }
-//            }
-//        }
-//        catch (Exception e) {
-//            throw new Exception(e.getMessage());
-//        }
-//    }
     private void insertarSelecciones() throws Exception {
         try
         {
@@ -137,6 +142,8 @@ public class ProyectosUsuario {
                         getPlantillas()) {
                     ProyectoSeleccionA ps = new ProyectoSeleccionA(p);
                     if (!ps.Existe() && ps.getSeleccion() != null) {
+                        ps.setIdUsuario(getIdUsuario());
+                        ps.setIdProyecto(getId());
                         ps.Insertar();
                     }
                     else {
@@ -181,14 +188,94 @@ public class ProyectosUsuario {
         }
     }
 
+    private int cargarCantidadSelecciones()  {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+
+            DataTable dt = new Persistencia().Query("CALL SP_ProyectoSeleccion_CargarCantidadSeleccionesPorIdProyecto", params);
+
+            if (dt.Rows.size() > 0) {
+                if (dt.Rows.get(0).get("Cantidad") != null ) {
+                    return Integer.parseInt(dt.Rows.get(0).get("Cantidad"));
+                }
+            }
+
+        } catch (Exception e) {
+            //new Exception("Error al cargar la cantidad de selecciones del proyecto " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    private void CargarSelecciones() {
+        try {
+            ProyectoSeleccionA proyectoSeleccionA = new ProyectoSeleccionA();
+            setSelecciones(proyectoSeleccionA.Listar(getId()));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void CargarProductosSeleccion(int idSeleccion) {
+        try
+        {
+            SeleccionGruposProductos seleccionGruposProductos = new SeleccionGruposProductos();
+            setProductosSeleccion(seleccionGruposProductos.ListarPorIdSeleccion(idSeleccion));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private double CalcularCostoTotal() {
+        double result = 0f;
+        try {
+            CargarSelecciones();
+            for (ProyectoSeleccionA seleccion:
+                 getSelecciones()) {
+                SeleccionGruposProductos seleccionGruposProductos = new SeleccionGruposProductos();
+                for ( SeleccionGruposProductos producto:
+                        seleccionGruposProductos.ListarPorIdSeleccion(seleccion.getIdSeleccion())) {
+                    producto.setDescripcionPlantilla(seleccion.getDescripcionPlantilla());
+                    producto.setAreaSeleccion(seleccion.getAreaSeleccion());
+                    if (getEsDescuento() == 1) {
+                        producto.setPrecio(calcularPrecioDescuento(producto.getPrecio()));
+                    }
+                    this.productosSeleccion.add(producto);
+                    result += seleccion.getCantidad() * (producto.getCantidad() * producto.getPrecio() );
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private double calcularPrecioDescuento(double precio) {
+        return precio - ( getDescuento() * precio / 100 );
+    }
+
     private  ProyectosUsuario loadProyectosUusario(Map<String, String> row) {
 
         ProyectosUsuario pu = new ProyectosUsuario();
         pu.setId(Integer.parseInt(row.get("Id")));
         pu.setNombreProyecto(row.get("NombreProyecto"));
         pu.setFechaProyecto(row.get("FechaRegistro"));
+        if (row.get("EsDescuento")!= null) {
+            pu.setEsDescuento(Byte.parseByte(row.get("EsDescuento")));
+        }
+        if (row.get("Porcentaje")!= null) {
+            pu.setDescuento(Double.parseDouble(row.get("Porcentaje")));
+        }
+        pu.setCantidadSelecciones(pu.cargarCantidadSelecciones());
+        pu.setCostoTotal(pu.CalcularCostoTotal());
         if (row.get("Activo") != null)
             pu.setActivo(Byte.parseByte(row.get("Activo")));
+
         return pu;
     }
 }

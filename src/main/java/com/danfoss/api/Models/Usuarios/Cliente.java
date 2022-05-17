@@ -2,6 +2,7 @@ package com.danfoss.api.Models.Usuarios;
 
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
+import com.danfoss.api.Models.Usuarios.PreciosUsuarios.HistorialDescuentoUsuario;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ public class Cliente {
     private int IdUsuarioRegistra;
     private int IdTipoCliente;
     private TipoCliente tipoCliente;
-    private int Descuento;
+    private double Descuento;
     private byte EsDescuento;
     private ArrayList<Usuario> usuarios = new ArrayList<>();
     private String TipoPrecio;
@@ -23,92 +24,72 @@ public class Cliente {
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
-
     public String getNombreCliente() {
         return NombreCliente;
     }
-
     public void setNombreCliente(String nombreCliente) {
         NombreCliente = nombreCliente;
     }
-
     public int getIdUsuarioRegistra() {
         return IdUsuarioRegistra;
     }
-
     public void setIdUsuarioRegistra(int idUsuarioRegistra) {
         IdUsuarioRegistra = idUsuarioRegistra;
     }
-
     public int getIdTipoCliente() {
         return IdTipoCliente;
     }
-
     public void setIdTipoCliente(int idTipoCliente) {
         IdTipoCliente = idTipoCliente;
     }
-
     public TipoCliente getTipoCliente() {
         return tipoCliente;
     }
-
     public void setTipoCliente(TipoCliente tipoCliente) {
         this.tipoCliente = tipoCliente;
     }
-
-    public int getDescuento() {
+    public double getDescuento() {
         return Descuento;
     }
-
-    public void setDescuento(int descuento) {
+    public void setDescuento(double descuento) {
         Descuento = descuento;
     }
-
     public ArrayList<Usuario> getUsuarios() {
         return usuarios;
     }
-
     public void setUsuarios(ArrayList<Usuario> usuarios) {
         this.usuarios = usuarios;
     }
-
     public String getTipoPrecio() {
         return TipoPrecio;
     }
-
     public void setTipoPrecio(String tipoPrecio) {
         this.TipoPrecio = tipoPrecio;
     }
-
     public String getTipoClienteDesc() {
         return tipoClienteDesc;
     }
-
     public void setTipoClienteDesc(String tipoClienteDesc) {
         this.tipoClienteDesc = tipoClienteDesc;
     }
-
     public byte getEsDescuento() {
         return EsDescuento;
     }
-
     public void setEsDescuento(byte esDescuento) {
         EsDescuento = esDescuento;
     }
-
     public byte getStatus() {
         return Status;
     }
-
     public void setStatus(byte status) {
         Status = status;
     }
 
     public Cliente(){}
+
     public Cliente(int idCliente){
         setId(idCliente);
     }
@@ -142,21 +123,42 @@ public class Cliente {
         return result;
     }
 
-    public int Insertar() throws Exception {
+    public void Insertar() throws Exception {
         try
         {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getNombreCliente());
             params.put("2", getTipoCliente().getId());
-            params.put("3", 1);
+            params.put("3", getIdUsuarioRegistra());
             params.put("4", getEsDescuento());
 
             DataTable dt = new Persistencia().Query("CALL SP_Cliente_Insertar", params);
-            return Integer.parseInt(dt.Rows.get(0).get("Id"));
+            if(dt.Rows.size() > 0) {
+                setId(Integer.parseInt(dt.Rows.get(0).get("Id")));
+                if (getTipoCliente().getId() == 1) {
+                    if (getEsDescuento() == 1) {
+                       InsertarDescuento();
+                    }
+                }
+            }
         }
         catch (Exception e) {
             throw new Exception("Error al insertar cliente " + e.getMessage());
         }
+    }
+
+    private void InsertarDescuento() throws Exception {
+
+            HistorialDescuentoUsuario historialDescuentoUsuario = new HistorialDescuentoUsuario();
+            historialDescuentoUsuario.setIdCliente(getId());
+
+            //Descativamos cualquier descuento anterior asignado al cliente
+            historialDescuentoUsuario.DesactivarPorIdCliente();
+
+            //Insertamos nuevo porcentaje de descuento del cliente
+            historialDescuentoUsuario.setPorcentaje(getDescuento());
+            historialDescuentoUsuario.setIdUsuarioRegistro(getIdUsuarioRegistra());
+            historialDescuentoUsuario.Insertar();
     }
 
     public boolean Actualizar() throws Exception {
@@ -165,9 +167,15 @@ public class Cliente {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getId());
             params.put("2", getNombreCliente());
-            params.put("3", getIdTipoCliente());
+            params.put("3", getTipoCliente().getId());
+            params.put("4", getEsDescuento());
 
             new Persistencia().ExceuteNonQuery("CALL SP_Cliente_Actualizar", params);
+            if (getTipoCliente().getId() == 1) {
+                if (getEsDescuento() == 1) {
+                    InsertarDescuento();
+                }
+            }
             return true;
         }
         catch (Exception e) {
@@ -229,12 +237,21 @@ public class Cliente {
             c.setEsDescuento(Byte.parseByte(row.get("EsDescuento")));
         }
 
-        if (getEsDescuento() == 1) {
-            c.setTipoPrecio("Descuento");
+        if (c.getTipoCliente().getId() == 2) {
+            c.setTipoPrecio("-");
         }
         else {
-            c.setTipoPrecio("Listado de Precios");
+            if (c.getEsDescuento() == 1) {
+                c.setTipoPrecio("Descuento");
+                if (row.get("Porcentaje") != null) {
+                    c.setDescuento(Double.parseDouble(row.get("Porcentaje")));
+                }
+            }
+            else {
+                c.setTipoPrecio("Listado de Precios");
+            }
         }
+
 
         return c;
     }
