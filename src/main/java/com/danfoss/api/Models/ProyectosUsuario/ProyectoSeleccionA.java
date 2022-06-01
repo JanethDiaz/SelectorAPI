@@ -15,7 +15,8 @@ import java.util.Map;
 public class ProyectoSeleccionA extends PlantillaBase {
     private int idUsuario;
     private ArrayList<SeleccionGruposProductos> productosSeleccion;
-    private double precioTotal;
+
+    private double costoTotal;
     public int getIdUsuario() {
         return idUsuario;
     }
@@ -28,11 +29,11 @@ public class ProyectoSeleccionA extends PlantillaBase {
     public void setProductosSeleccion(ArrayList<SeleccionGruposProductos> productosSeleccion) {
         this.productosSeleccion = productosSeleccion;
     }
-    public double getPrecioTotal() {
-        return precioTotal;
+    public double getCostoTotal() {
+        return costoTotal;
     }
-    public void setPrecioTotal(double precioTotal) {
-        this.precioTotal = precioTotal;
+    public void setCostoTotal(double costoTotal) {
+        this.costoTotal = costoTotal;
     }
 
     public ProyectoSeleccionA() {
@@ -152,9 +153,18 @@ public class ProyectoSeleccionA extends PlantillaBase {
         ps.setIdProyecto(Integer.parseInt(row.get("IdProyecto")));
         ps.setAreaSeleccion(row.get("AreaSeleccion"));
         ps.setDescripcionPlantilla(row.get("DescripcionPlantilla"));
+        if (row.get("UrlCoolSelector") != null ) {
+            ps.setUrlCoolSelector(row.get("UrlCoolSelector"));
+        }
 
-        if(row.get("CantidadSeleccion") != null)
+
+        if(row.get("CantidadSeleccion") != null) {
             ps.setCantidad(Integer.parseInt(row.get("CantidadSeleccion")));
+        }
+
+        if (row.get("CostoTotal") != null ) {
+            ps.setCostoTotal( Double.parseDouble(row.get("CostoTotal")));
+        }
 
         if ( getIdSeleccion() > 0 ) {
             Seleccion seleccion = new Seleccion();

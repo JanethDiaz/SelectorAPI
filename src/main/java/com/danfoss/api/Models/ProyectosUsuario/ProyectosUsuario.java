@@ -3,7 +3,6 @@ package com.danfoss.api.Models.ProyectosUsuario;
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
 import com.danfoss.api.Models.Selecciones.PlantillaSeleccion;
-import com.danfoss.api.Models.Selecciones.Seleccion;
 import com.danfoss.api.Models.Selecciones.SeleccionGruposProductos;
 
 import java.util.ArrayList;
@@ -234,18 +233,22 @@ public class ProyectosUsuario {
         double result = 0f;
         try {
             CargarSelecciones();
-            for (ProyectoSeleccionA seleccion:
+            for (ProyectoSeleccionA proyectoSeleccionA:
                  getSelecciones()) {
                 SeleccionGruposProductos seleccionGruposProductos = new SeleccionGruposProductos();
                 for ( SeleccionGruposProductos producto:
-                        seleccionGruposProductos.ListarPorIdSeleccion(seleccion.getIdSeleccion())) {
-                    producto.setDescripcionPlantilla(seleccion.getDescripcionPlantilla());
-                    producto.setAreaSeleccion(seleccion.getAreaSeleccion());
+                        seleccionGruposProductos.ListarPorIdSeleccion(proyectoSeleccionA.getIdSeleccion())) {
+                    producto.setDescripcionPlantilla(proyectoSeleccionA.getDescripcionPlantilla());
+                    producto.setAreaSeleccion(proyectoSeleccionA.getAreaSeleccion());
+                    producto.setCantidad(producto.getCantidad() * proyectoSeleccionA.getCantidad());
+                    double total = producto.getPrecio()  * producto.getCantidad();
+                    producto.setPrecioTotal(total);
                     if (getEsDescuento() == 1) {
                         producto.setPrecio(calcularPrecioDescuento(producto.getPrecio()));
                     }
-                    this.productosSeleccion.add(producto);
-                    result += seleccion.getCantidad() * (producto.getCantidad() * producto.getPrecio() );
+                    this.productosSeleccion.add( producto );
+                    //result += proyectoSeleccionA.getCantidad() * ( producto.getCantidad()  * producto.getPrecio() );
+                    result += ( producto.getCantidad()  * producto.getPrecio() );
                 }
             }
         }

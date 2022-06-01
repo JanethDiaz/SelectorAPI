@@ -26,8 +26,8 @@ public class ApiConfig {
     }
 
     private static List<String> getUrls() {
-        return Arrays.asList("http://danfossapps.com/"
-                , "http://204.2.194.52/"
-                , "http://localhost:3000/");
+        return Arrays.asList("http://dirsolutionsmx.com/"
+                            , "http://204.2.194.52/"
+                            , "http://localhost:3000/");
     }
 }

@@ -10,6 +10,7 @@ public class PlantillaBase {
     private int idProyecto;
     private int cantidad = 1;
     private String areaSeleccion;
+    private String urlCoolSelector;
 
     public int getId() {
         return id;
@@ -52,5 +53,11 @@ public class PlantillaBase {
     }
     public void setIdProyecto(int idProyecto) {
         this.idProyecto = idProyecto;
+    }
+    public String getUrlCoolSelector() {
+        return urlCoolSelector;
+    }
+    public void setUrlCoolSelector(String urlCoolSelector) {
+        this.urlCoolSelector = urlCoolSelector;
     }
 }

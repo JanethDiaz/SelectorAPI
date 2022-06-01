@@ -95,48 +95,6 @@ public class SeleccionGruposProductos {
     public void setPrecioTotal(double precioTotal) {
         this.precioTotal = precioTotal;
     }
-    public  void Insertar() throws Exception {
-        try
-        {
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("1", getIdProducto());
-            params.put("2", getIdGrupo());
-            params.put("3", getCantidad());
-            DataTable dt = new Persistencia().Query("CALL SP_SeleccionGruposProductos_Insertar", params);
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Error al insertar SeleccionGruposProductos IdProducto: " + getIdProducto()
-                    + " IdGrupo " + getIdGrupo() + "Cantidad " + getCantidad() + " " + e.getMessage() );
-        }
-    }
-    public  boolean Actualizar() throws Exception {
-        try {
-
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("1", getId());
-            params.put("2", getIdProducto());
-            params.put("3", getIdGrupo());
-            params.put("4", getCantidad());
-
-            DataTable dt = new Persistencia().Query("CALL SP_SeleccionGruposProductos_Actualizar", params);
-            return true;
-
-        } catch (Exception e) {
-            throw new Exception("Error no se logro actualizar" + e.getMessage());
-        }
-    }
-    public  boolean Eliminar() throws Exception {
-        try {
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("1", getId());
-
-            DataTable dt = new Persistencia().Query("CALL SP_SeleccionGruposProductos_Eliminar", params);
-            return true;
-        } catch (Exception e) {
-            throw new Exception("Error no se logro eliminar" + e.getMessage());
-        }
-    }
     public int getCantidadFija() {
         return cantidadFija;
     }
@@ -156,6 +114,51 @@ public class SeleccionGruposProductos {
         this.areaSeleccion = areaSeleccion;
     }
 
+    public  void Insertar() throws Exception {
+        try
+        {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getIdProducto());
+            params.put("2", getIdGrupo());
+            params.put("3", getCantidad());
+            DataTable dt = new Persistencia().Query("CALL SP_SeleccionGruposProductos_Insertar", params);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error al insertar SeleccionGruposProductos IdProducto: " + getIdProducto()
+                    + " IdGrupo " + getIdGrupo() + "Cantidad " + getCantidad() + " " + e.getMessage() );
+        }
+    }
+
+    public  boolean Actualizar() throws Exception {
+        try {
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+            params.put("2", getIdProducto());
+            params.put("3", getIdGrupo());
+            params.put("4", getCantidad());
+
+            DataTable dt = new Persistencia().Query("CALL SP_SeleccionGruposProductos_Actualizar", params);
+            return true;
+
+        } catch (Exception e) {
+            throw new Exception("Error no se logro actualizar" + e.getMessage());
+        }
+    }
+
+    public  boolean Eliminar() throws Exception {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", getId());
+
+            DataTable dt = new Persistencia().Query("CALL SP_SeleccionGruposProductos_Eliminar", params);
+            return true;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro eliminar" + e.getMessage());
+        }
+    }
+
     public ArrayList<SeleccionGruposProductos> Listar() throws Exception {
         try {
             ArrayList<SeleccionGruposProductos> result = new ArrayList<>();
@@ -170,6 +173,7 @@ public class SeleccionGruposProductos {
             throw new Exception("Error no se logro listar" + e.getMessage());
         }
     }
+
     public ArrayList<SeleccionGruposProductos> ListarPorIdSeleccion(Seleccion seleccion) throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -205,7 +209,6 @@ public class SeleccionGruposProductos {
             throw new Exception("Error al listar los productos de la seleccion " + e.getMessage());
         }
     }
-
 
     public void crearSeleccionGruposProductos(Iterator<Cell> cellsInRow) throws IOException {
         int cellIdx = 1;
@@ -302,8 +305,5 @@ public class SeleccionGruposProductos {
         }
         return sgp;
     }
-
-
-
 }
 

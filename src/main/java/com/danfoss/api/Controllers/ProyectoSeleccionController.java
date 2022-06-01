@@ -46,19 +46,6 @@ public class ProyectoSeleccionController {
         return seleccion;
     }
 
-//    @RequestMapping(value = "/listar",  method = RequestMethod.GET)
-//    public ResponseEntity<?> Listar(){
-//        try
-//        {
-//            ProyectoSeleccion c = new ProyectoSeleccion();
-//            return new ResponseEntity<>(new Gson().toJson(c.Listar()), HttpStatus.OK);
-//        }
-//        catch (Exception e)
-//        {
-//            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @RequestMapping(value = "/actualizar",  method = RequestMethod.POST)
     public ResponseEntity<?> Actualizar(@RequestBody ProyectoSeleccionA proyectoSeleccion){
         try

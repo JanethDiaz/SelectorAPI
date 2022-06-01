@@ -114,11 +114,9 @@ public class Cliente {
         HashMap<String, Object> params = new HashMap<>();
         params.put("1", getId());
 
-        DataTable dt = new Persistencia().Query("CALL SP_Cliente_Listar");
+        DataTable dt = new Persistencia().Query("CALL SP_Cliente_CargarPorId", params);
         if (dt.Rows.size() > 0) {
-            for ( Map<String, String> row: dt.Rows ) {
-                result = loadCliente(row);
-            }
+            result = loadCliente(dt.Rows.get(0));
         }
         return result;
     }
@@ -251,8 +249,6 @@ public class Cliente {
                 c.setTipoPrecio("Listado de Precios");
             }
         }
-
-
         return c;
     }
 }

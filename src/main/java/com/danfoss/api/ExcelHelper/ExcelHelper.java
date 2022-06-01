@@ -90,7 +90,7 @@ public class ExcelHelper {
             Sheet sheet = workbook.getSheet(SHEET_BD_SELECCIONES);
             Iterator<Row> rows = sheet.iterator();
             GrupoSeleccion grupoSeleccion = new GrupoSeleccion();
-            SeleccionGruposProductos seleccionGruposProductos = new SeleccionGruposProductos();
+            SeleccionGruposProductos seleccionGruposProductos;
 
             int rowNumber = 0;
 
@@ -105,7 +105,6 @@ public class ExcelHelper {
                 Iterator<Cell> cellsInRowSeleccion = currentRow.iterator();
                 Iterator<Cell> cellsInRowGrupos = currentRow.iterator();
                 Iterator<Cell> cellsInRowGruposProducto = currentRow.iterator();
-
 
                 Seleccion seleccion = new Seleccion().crearSeleccion(cellsInRowSeleccion);
 
@@ -123,6 +122,7 @@ public class ExcelHelper {
                     PlantillaSeleccion plantilla = new PlantillaSeleccion();
 
                     plantilla.crearNombre(seleccion);
+                    plantilla.crearUrlCoolSelector(seleccion);
                     plantilla.Insertar();
                     plantillaSeleccions.add(plantilla);
                     seleccion.Insertar(plantilla.getId());
@@ -130,6 +130,7 @@ public class ExcelHelper {
                 }
                 seleccions.add(seleccion);
                 grupoSeleccion.crearGrupo(cellsInRowGrupos);
+                seleccionGruposProductos = new SeleccionGruposProductos();
                 seleccionGruposProductos.setIdGrupo(grupoSeleccion.getId());
                 seleccionGruposProductos.crearSeleccionGruposProductos(cellsInRowGruposProducto);
                 if (seleccionGruposProductos.getIdProducto() > 0 ) {
