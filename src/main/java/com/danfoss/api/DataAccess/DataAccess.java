@@ -9,8 +9,8 @@ import java.util.*;
 public class DataAccess {
     private Connection conection;
 
-//    private static final String url      = "jdbc:mysql://localhost/SelectorAppDB?serverTimezone=UTC";
-    private static final String url      = "jdbc:mysql://204.2.194.52/SelectorAppDB_Dev?serverTimezone=UTC";
+    private static final String url      = "jdbc:mysql://localhost/SelectorAppDB?serverTimezone=UTC";
+//    private static final String url      = "jdbc:mysql://204.2.194.52/SelectorAppDB_Dev?serverTimezone=UTC";
     private static final String user     = "root";
     private static final String password = "UeV8zPxBi#";
 

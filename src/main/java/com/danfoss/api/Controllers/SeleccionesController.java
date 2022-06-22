@@ -1,5 +1,6 @@
 package com.danfoss.api.Controllers;
 
+import com.danfoss.api.DAO.ListarDeshieloDAO;
 import com.danfoss.api.DAO.TemperaturaCapacidadDAO;
 import com.danfoss.api.Models.ProyectosUsuario.ProyectoSeleccionA;
 import com.danfoss.api.Models.ProyectosUsuario.ProyectosUsuario;
@@ -103,6 +104,56 @@ public class SeleccionesController {
         try
         {
             return new ResponseEntity<>(new Gson().toJson(deshielo.ListarPorIdPadre()), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar las capacidades del sistema " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/listarPorParametros",  method = RequestMethod.POST)
+    public ResponseEntity<?> ListarPorParametros(@RequestBody ListarDeshieloDAO deshieloDAO) {
+        try
+        {
+            Deshielo d = new Deshielo();
+            return new ResponseEntity<>(new Gson().toJson(
+                    d.ListarPorParametros(deshieloDAO.getIdSistema()
+                    , deshieloDAO.getIdCapacidad()
+                    , deshieloDAO.getIdTemperatura())), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar las capacidades del sistema " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/listarPorParametrosIdPadre1",  method = RequestMethod.POST)
+    public ResponseEntity<?> ListarPorParametrosIdPadre1(@RequestBody ListarDeshieloDAO deshieloDAO) {
+        try
+        {
+            Deshielo d = new Deshielo();
+            return new ResponseEntity<>(new Gson().toJson(
+                    d.ListarPorParametrosIdPadre1(deshieloDAO.getIdSistema()
+                            , deshieloDAO.getIdCapacidad()
+                            , deshieloDAO.getIdTemperatura()
+                            , deshieloDAO.getIdPadre())), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(new Gson().toJson("Error al tratar de Listar las capacidades del sistema " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/listarPorParametrosIdPadre2",  method = RequestMethod.POST)
+    public ResponseEntity<?> ListarPorParametrosIdPadre2(@RequestBody ListarDeshieloDAO deshieloDAO) {
+        try
+        {
+            Deshielo d = new Deshielo();
+            return new ResponseEntity<>(new Gson().toJson(
+                    d.ListarPorParametrosIdPadre2(deshieloDAO.getIdSistema()
+                            , deshieloDAO.getIdCapacidad()
+                            , deshieloDAO.getIdTemperatura()
+                            , deshieloDAO.getIdPadre())), HttpStatus.OK);
         }
         catch (Exception e)
         {

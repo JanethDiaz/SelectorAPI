@@ -26,7 +26,7 @@ public class Seleccion {
     private int idPlantillaSeleccion;
     private String areaSeleccion;
     private int cantidad;
-
+    private int idCliente;
     //Encabezados de la tabla
     private int capacidadDesc;
     private String temperaturaDesc;
@@ -160,6 +160,12 @@ public class Seleccion {
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
+    public int getIdCliente() {
+        return idCliente;
+    }
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
+    }
 
     public void Insertar(int idPlantilla) throws Exception{
         try
@@ -257,7 +263,6 @@ public class Seleccion {
 
         if (deshieloSeleccion.getIdPadre() > 0) {
             Deshielo deshielo2 = deshieloSeleccion.CargarPorId();
-            //s.setDeshielo2(deshielo2.getDescripcionDeshielo());
             if (deshielo2.getIdPadre() > 0) {
                 Deshielo deshielo3 = deshielo2.CargarPorId();
                 s.setDeshielo3(deshieloSeleccion.getDescripcionDeshielo());

@@ -114,7 +114,6 @@ public class ExcelHelper {
                 }
 
                 seleccion.CargarPorParametros();
-
                 if (seleccion.getId() > 0) {
                     grupoSeleccion.setIdSeleccion(seleccion.getId());
                 }

@@ -178,6 +178,7 @@ public class SeleccionGruposProductos {
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", seleccion.getId());
+            params.put("2", seleccion.getIdCliente());
             ArrayList<SeleccionGruposProductos> result = new ArrayList<>();
             DataTable dt = new Persistencia().Query("CALL SP_GrupoSeleccion_ListarPorIdSeleccion", params);
             if (dt.Rows.size() > 0) {
@@ -196,6 +197,7 @@ public class SeleccionGruposProductos {
         try {
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", idSeleccion);
+            params.put("2", 0);
             ArrayList<SeleccionGruposProductos> result = new ArrayList<>();
             DataTable dt = new Persistencia().Query("CALL SP_GrupoSeleccion_ListarPorIdSeleccion", params);
             if (dt.Rows.size() > 0) {

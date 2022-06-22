@@ -11,6 +11,7 @@ public class Deshielo {
     private int id;
     private String descripcionDeshielo;
     private int idPadre;
+    private int idSistema;
     private int etiqueta;
     private byte status;
     private byte activo;
@@ -56,7 +57,12 @@ public class Deshielo {
     public void setActivo(byte activo) {
         this.activo = activo;
     }
-
+    public int getIdSistema() {
+        return idSistema;
+    }
+    public void setIdSistema(int idSistema) {
+        this.idSistema = idSistema;
+    }
     public  boolean Insertar() throws Exception {
 
         try {
@@ -71,7 +77,6 @@ public class Deshielo {
             throw new Exception("Error no se logro insertar" + e.getMessage());
         }
     }
-
     public  boolean Actualizar() throws Exception {
         try {
 
@@ -88,7 +93,6 @@ public class Deshielo {
             throw new Exception("Error no se logro actualizar" + e.getMessage());
         }
     }
-
     public  boolean Eliminar() throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -207,7 +211,78 @@ public class Deshielo {
             ArrayList<Deshielo> result = new ArrayList<>();
             HashMap<String, Object> params = new HashMap<>();
             params.put("1", getId());
-            DataTable dt = new Persistencia().Query("CALL SP_Deshielo_ListarPorIdPadre", params);
+            DataTable dt;
+            if(getIdSistema() == 1 || getIdSistema() == 2) {
+                 dt = new Persistencia().Query("CALL SP_Deshielo_Listar_Recirculado", params);
+            }
+            else {
+                 dt = new Persistencia().Query("CALL SP_Deshielo_ListarPorIdPadre", params);
+            }
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadDeshielo(row));
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro listar el deshielo por idPadre " + e.getMessage());
+        }
+    }
+
+    public ArrayList<Deshielo> ListarPorParametros(int idSistema, int idCapacidad, int idTemperatura) throws Exception {
+        try {
+            ArrayList<Deshielo> result = new ArrayList<>();
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", idSistema);
+            params.put("2", idCapacidad);
+            params.put("3", idTemperatura);
+
+            DataTable dt = new Persistencia().Query("CALL SP_Deshielo_ListarPorParametros", params);
+
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadDeshielo(row));
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro listar el deshielo por idPadre " + e.getMessage());
+        }
+    }
+
+    public ArrayList<Deshielo> ListarPorParametrosIdPadre1(int idSistema, int idCapacidad, int idTemperatura, int idPadre) throws Exception {
+        try {
+            ArrayList<Deshielo> result = new ArrayList<>();
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", idSistema);
+            params.put("2", idCapacidad);
+            params.put("3", idTemperatura);
+            params.put("4", idPadre);
+
+            DataTable dt = new Persistencia().Query("CALL SP_Deshielo1_ListarPorParametrosIdPadre", params);
+
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadDeshielo(row));
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            throw new Exception("Error no se logro listar el deshielo por idPadre " + e.getMessage());
+        }
+    }
+
+    public ArrayList<Deshielo> ListarPorParametrosIdPadre2(int idSistema, int idCapacidad, int idTemperatura, int idPadre) throws Exception {
+        try {
+            ArrayList<Deshielo> result = new ArrayList<>();
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", idSistema);
+            params.put("2", idCapacidad);
+            params.put("3", idTemperatura);
+            params.put("4", idPadre);
+
+            DataTable dt = new Persistencia().Query("CALL SP_Deshielo2_ListarPorParametrosIdPadre", params);
+
             if (dt.Rows.size() > 0) {
                 for ( Map<String, String> row: dt.Rows ) {
                     result.add(loadDeshielo(row));

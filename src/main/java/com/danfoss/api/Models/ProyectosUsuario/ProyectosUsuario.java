@@ -201,7 +201,6 @@ public class ProyectosUsuario {
             }
 
         } catch (Exception e) {
-            //new Exception("Error al cargar la cantidad de selecciones del proyecto " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -241,13 +240,12 @@ public class ProyectosUsuario {
                     producto.setDescripcionPlantilla(proyectoSeleccionA.getDescripcionPlantilla());
                     producto.setAreaSeleccion(proyectoSeleccionA.getAreaSeleccion());
                     producto.setCantidad(producto.getCantidad() * proyectoSeleccionA.getCantidad());
-                    double total = producto.getPrecio()  * producto.getCantidad();
-                    producto.setPrecioTotal(total);
                     if (getEsDescuento() == 1) {
                         producto.setPrecio(calcularPrecioDescuento(producto.getPrecio()));
                     }
+                    double total = producto.getPrecio()  * producto.getCantidad();
+                    producto.setPrecioTotal(total);
                     this.productosSeleccion.add( producto );
-                    //result += proyectoSeleccionA.getCantidad() * ( producto.getCantidad()  * producto.getPrecio() );
                     result += ( producto.getCantidad()  * producto.getPrecio() );
                 }
             }
