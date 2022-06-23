@@ -4,6 +4,7 @@ import com.danfoss.api.DAO.UploadProductosDAO;
 import com.danfoss.api.DataAccess.DataTable;
 import com.danfoss.api.DataAccess.Persistencia;
 import com.danfoss.api.ExcelHelper.ExcelHelper;
+import com.danfoss.api.Models.Usuarios.PreciosUsuarios.HistorialPreciosUsuario;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -190,6 +191,30 @@ public class Producto {
                                 hpp.Insertar();
                             }
                         }
+                    }
+                }
+            }
+        }
+        catch( Exception e ) {
+            throw new RuntimeException("fail to store excel data: " + e.getMessage());
+        }
+    }
+
+    public  void ActualizarListaPreciosCliente(int idCliente, int idUsuarioRegistro, MultipartFile multipartFile) throws RuntimeException {
+        try
+        {
+            List<Producto> productos = ExcelHelper.excelToProducts(multipartFile.getInputStream());
+            HistorialPreciosUsuario hpu = new HistorialPreciosUsuario();
+            hpu.setIdCliente(idCliente);
+            hpu.DesactivarPorIdCliente();
+            for (Producto p : productos) {
+                if (!p.getCodigo().equals("")) {
+                    Producto producto = cargarPorCodigo(p.getCodigo());
+                    if (producto.getId() > 0) {
+                        hpu.setIdProducto(producto.getId());
+                        hpu.setPrecio(p.getPrecio());
+                        hpu.setIdUsuarioRegistra(idUsuarioRegistro);
+                        hpu.Insertar();
                     }
                 }
             }

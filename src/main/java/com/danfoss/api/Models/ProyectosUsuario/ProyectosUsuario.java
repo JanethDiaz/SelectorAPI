@@ -14,6 +14,7 @@ public class ProyectosUsuario {
     private int id;
     private String nombreProyecto;
     private int idUsuario;
+    private int idCliente;
     private List<PlantillaSeleccion> plantillas;
     private ArrayList<ProyectoSeleccionA> selecciones;
     private ArrayList<SeleccionGruposProductos> productosSeleccion = new ArrayList<>();
@@ -95,6 +96,12 @@ public class ProyectosUsuario {
     }
     public void setDescuento(double descuento) {
         this.descuento = descuento;
+    }
+    public int getIdCliente() {
+        return idCliente;
+    }
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
     public void Insertar() throws Exception {
@@ -236,7 +243,7 @@ public class ProyectosUsuario {
                  getSelecciones()) {
                 SeleccionGruposProductos seleccionGruposProductos = new SeleccionGruposProductos();
                 for ( SeleccionGruposProductos producto:
-                        seleccionGruposProductos.ListarPorIdSeleccion(proyectoSeleccionA.getIdSeleccion())) {
+                        seleccionGruposProductos.ListarPorIdSeleccion(proyectoSeleccionA.getIdSeleccion(), getIdCliente())) {
                     producto.setDescripcionPlantilla(proyectoSeleccionA.getDescripcionPlantilla());
                     producto.setAreaSeleccion(proyectoSeleccionA.getAreaSeleccion());
                     producto.setCantidad(producto.getCantidad() * proyectoSeleccionA.getCantidad());
@@ -263,6 +270,7 @@ public class ProyectosUsuario {
     private  ProyectosUsuario loadProyectosUusario(Map<String, String> row) {
 
         ProyectosUsuario pu = new ProyectosUsuario();
+        pu.setIdCliente(getIdCliente());
         pu.setId(Integer.parseInt(row.get("Id")));
         pu.setNombreProyecto(row.get("NombreProyecto"));
         pu.setFechaProyecto(row.get("FechaRegistro"));

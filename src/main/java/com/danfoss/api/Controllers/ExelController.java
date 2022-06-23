@@ -46,12 +46,15 @@ public class ExelController {
 
     @RequestMapping(value = "/uploadPorCliente", method = RequestMethod.POST)
     public ResponseEntity<ResponseMessage> uploadFileCliente(@RequestParam("file") MultipartFile file,
-                                                             @RequestParam("idCliente") int idCliente) {
+                                                             @RequestParam("idCliente") int idCliente,
+                                                             @RequestParam("idUsuario") int idUsuarioRegistra) {
         String message;
 
-        if (ExcelHelper.hasExcelFormat(file)) {
+        if ( ExcelHelper.hasExcelFormat(file) ) {
             try
             {
+                Producto p = new Producto();
+                p.ActualizarListaPreciosCliente(idCliente, idUsuarioRegistra, file);
                 message = "Uploaded the file successfully: " + file.getOriginalFilename();
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
             }

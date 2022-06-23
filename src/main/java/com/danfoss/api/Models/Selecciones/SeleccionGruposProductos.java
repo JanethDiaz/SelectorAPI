@@ -212,6 +212,25 @@ public class SeleccionGruposProductos {
         }
     }
 
+    public ArrayList<SeleccionGruposProductos> ListarPorIdSeleccion(int idSeleccion, int idCliente) throws Exception {
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("1", idSeleccion);
+            params.put("2", idCliente);
+            ArrayList<SeleccionGruposProductos> result = new ArrayList<>();
+            DataTable dt = new Persistencia().Query("CALL SP_GrupoSeleccion_ListarPorIdSeleccion", params);
+            if (dt.Rows.size() > 0) {
+                for ( Map<String, String> row: dt.Rows ) {
+                    result.add(loadSeleccionGruposProducto(row));
+                }
+            }
+            return result;
+        }
+        catch (Exception e) {
+            throw new Exception("Error al listar los productos de la seleccion " + e.getMessage());
+        }
+    }
+
     public void crearSeleccionGruposProductos(Iterator<Cell> cellsInRow) throws IOException {
         int cellIdx = 1;
         try {

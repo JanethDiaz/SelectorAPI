@@ -54,6 +54,7 @@ public class ProductoController {
             return new ResponseEntity<>(new Gson().toJson("Error al tratar de Eliminar producto" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @RequestMapping(value = "/actualizar",  method = RequestMethod.POST)
     public ResponseEntity<?>  Actualizar(@RequestBody Producto producto) {
         try
